@@ -17,7 +17,9 @@ module Toy
     end
 
     def init_default_logger
-      if Object.const_defined?("RAILS_DEFAULT_LOGGER")
+      if defined?(::Rails) && Rails.respond_to?(:logger)
+        @@logger = ::Rails.logger
+      elsif Object.const_defined?("RAILS_DEFAULT_LOGGER")
         @@logger = Object.const_get("RAILS_DEFAULT_LOGGER")
       else
         require 'logger'

@@ -23,6 +23,16 @@ describe Toy::Connection do
       Toy.logger.should be_instance_of(Logger)
     end
 
+    it "should use Rails.logger if defined" do
+      remove_constants("Rails")
+      Rails = stub
+      logger = stub
+      Rails.stub!(:logger).and_return(logger)
+      
+      Toy.logger = nil
+      Toy.logger.should == logger
+    end
+    
     it "should use RAILS_DEFAULT_LOGGER if defined" do
       remove_constants("RAILS_DEFAULT_LOGGER")
       RAILS_DEFAULT_LOGGER = stub
