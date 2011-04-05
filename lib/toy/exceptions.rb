@@ -26,4 +26,10 @@ module Toy
       super("Key may not be nil")
     end
   end
+  
+  class ExistingUniqueIndex < Error
+    def initialize(*)
+      super("Uniquely indexed for another key already.")
+    end
+  end
 end

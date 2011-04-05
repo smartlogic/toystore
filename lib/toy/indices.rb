@@ -6,9 +6,20 @@ module Toy
       def indices
         @indices ||= {}
       end
+      
+      def index_store
+        @index_store || store
+      end
 
-      def index(name)
-        Index.new(self, name)
+      def store_indices(name=nil, client=nil, options={})
+        assert_client(name, client)
+        @index_store = Adapter[name].new(client, options) if !name.nil? && !client.nil?
+        assert_store(name, client, 'store')
+        @index_store
+      end
+      
+      def index(name, options = {})
+        Index.new(self, name, options)
       end
 
       def index_key(name, value)
@@ -21,21 +32,24 @@ module Toy
 
       def get_index(name, value)
         key = index_key(name, value)
-        store.read(key) || []
+        index_store.read(key) || []
       end
 
       def create_index(name, value, id)
         key = index_key(name, value)
         ids = get_index(name, value)
+        #TODO: How do we deal with a case where there is an existing index with multiple values?
+        index = indices[name.to_sym]
+        raise ExistingUniqueIndex if index.unique? && !ids.empty? && !ids.include?(id)
         ids.push(id) unless ids.include?(id)
-        store.write(key, ids)
+        index_store.write(key, ids)
       end
 
       def destroy_index(name, value, id)
         key = index_key(name, value)
         ids = get_index(name, value)
         ids.delete(id)
-        store.write(key, ids)
+        index_store.write(key, ids)
       end
     end
 

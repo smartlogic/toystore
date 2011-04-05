@@ -2,13 +2,17 @@ module Toy
   class Index
     attr_accessor :model, :name
 
-    def initialize(model, name)
-      @model, @name = model, name.to_sym
+    def initialize(model, name, options = {})
+      @model, @name, @options = model, name.to_sym, options
       raise(ArgumentError, "No attribute #{name} for index") unless model.attribute?(name)
 
       model.indices[name] = self
       model.send(:include, IndexCallbacks)
       create_finders
+    end
+    
+    def unique?
+      !!@options[:unique]
     end
 
     def eql?(other)
