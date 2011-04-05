@@ -39,7 +39,7 @@ module Toy
       
       def check_unique_indices
         indices.each do |name, index|
-          check_unique_index(name) if index.unique?
+          check_unique_index(name, send(name)) if index.unique?
         end
       end
       
