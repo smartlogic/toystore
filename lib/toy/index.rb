@@ -31,7 +31,7 @@ module Toy
       extend ActiveSupport::Concern
 
       included do
-        before_save   :check_unique_indices
+        validate  :check_unique_indices
         after_create  :index_create
         after_update  :index_update
         after_destroy :index_destroy
