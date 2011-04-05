@@ -29,12 +29,6 @@ module Toy
           raise(ArgumentError, "Index for #{name} does not exist")
         end
       end
-      
-      def check_unique_index(name, value)
-        #TODO: How do we deal with a case where there is an existing index with multiple values and ids == [id, some_other_id]?
-        ids = get_index(name, value)
-        errors.add(:base, "#{name} must be unique.") unless ids.empty? || ids.include?(id)
-      end
 
       def get_index(name, value)
         key = index_key(name, value)
@@ -63,6 +57,12 @@ module Toy
 
       def create_index(*args)
         self.class.create_index(*args)
+      end
+      
+      def check_unique_index(name, value)
+        #TODO: How do we deal with a case where there is an existing index with multiple values and ids == [id, some_other_id]?
+        ids = self.class.get_index(name, value)
+        errors.add(:base, "#{name} must be unique.") unless ids.empty? || ids.include?(id)
       end
 
       def destroy_index(*args)
