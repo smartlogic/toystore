@@ -37,7 +37,7 @@ module Toy
 
       def create(attrs={})
         if proxy_options[:inverse_of]
-          attrs.update(:"#{proxy_options[:inverse_of]}_id" => proxy_owner.id)
+          attrs.send(:update, :"#{proxy_options[:inverse_of]}_id" => proxy_owner.id)
         end
         proxy_class.create(attrs).tap do |record|
           if record.persisted?
