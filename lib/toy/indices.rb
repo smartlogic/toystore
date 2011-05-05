@@ -62,7 +62,7 @@ module Toy
       def check_unique_index(name, value)
         #TODO: How do we deal with a case where there is an existing index with multiple values and ids == [id, some_other_id]?
         ids = self.class.get_index(name, value)
-        errors.add(:base, "#{name} must be unique.") unless ids.empty? || ids.include?(id)
+        errors.add(name, "must be unique.") unless ids.empty? || ids.include?(id)
       end
 
       def destroy_index(*args)
