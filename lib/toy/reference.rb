@@ -118,15 +118,29 @@ module Toy
       def create_accessors
         model.class_eval """
           def #{name}
-            #{instance_variable} ||= self.class.references[:#{name}].new_proxy(self)
+            #{instance_variable} ||= self.class.references[:#{name}].new_proxy(self).target
           end
 
           def #{name}=(record)
-            #{name}.replace(record)
+            self.class.references[:#{name}].new_proxy(self).replace(record)
+            #{instance_variable} = record
           end
 
           def #{name}?
-            #{name}.present?
+            !!#{name}
+          end
+          
+          def build_#{name}(attrs={})
+            self.class.references[:#{name}].new_proxy(self).build(attrs)
+          end
+          
+          def create_#{name}(attrs={})
+            self.class.references[:#{name}].new_proxy(self).create(attrs)
+          end
+          
+          def reset_#{name}
+            #{instance_variable} = nil
+            self.class.references[:#{name}].new_proxy(self).reset
           end
         """
       end

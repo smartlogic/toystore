@@ -184,6 +184,18 @@ describe Toy::Reference do
       @game.user = @user
       @game.user.should_not be_nil
     end
+    
+    it "returns true when nil? is queried" do
+      @game.user.nil?.should == true
+    end
+    
+    it "does not evaluate to true when it is used in a conditional" do
+      lambda { raise if @game.user }.should_not raise_error
+    end
+    
+    it "should return true when prefaced with !" do
+      (!@game.user).should == true
+    end
   end
 
   describe "reference#blank?" do
@@ -226,7 +238,7 @@ describe Toy::Reference do
 
     it "unmemoizes the list" do
       @game.user.should == @user
-      @game.user.reset
+      @game.reset_user
       User.should_receive(:get).and_return(@user)
       @game.user.should == @user
     end
@@ -340,7 +352,7 @@ describe Toy::Reference do
   describe "reference#create" do
     before do
       @game = Game.create
-      @user = @game.user.create
+      @user = @game.create_user
     end
 
     it_should_behave_like 'reference#create'
@@ -350,7 +362,7 @@ describe Toy::Reference do
     before do
       User.attribute(:name, String)
       @game = Game.create
-      @user = @game.user.create(:name => 'John')
+      @user = @game.create_user(:name => 'John')
     end
 
     it_should_behave_like 'reference#create'
@@ -375,14 +387,14 @@ describe Toy::Reference do
 
     it "does not save owner" do
       @game.should_not_receive(:save)
-      @game.user.build
+      @game.build_user
     end
   end
 
   describe "reference#build" do
     before do
       @game = Game.create
-      @user = @game.user.build
+      @user = @game.build_user
     end
 
     it_should_behave_like 'reference#build'
@@ -392,7 +404,7 @@ describe Toy::Reference do
     before do
       User.attribute(:name, String)
       @game = Game.create
-      @user = @game.user.build(:name => 'John')
+      @user = @game.build_user(:name => 'John')
     end
 
     it_should_behave_like 'reference#build'
