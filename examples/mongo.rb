@@ -11,7 +11,6 @@ require 'toystore'
 class User
   include Toy::Store
   store :mongo, Mongo::Connection.new.db('adapter')['testing']
-  key(:object_id)
 
   attribute :name, String
 end

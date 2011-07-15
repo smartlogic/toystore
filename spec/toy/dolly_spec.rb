@@ -1,6 +1,6 @@
 require 'helper'
 
-describe Toy::Connection do
+describe Toy::Dolly do
   uses_constants('User', 'Game', 'Move')
 
   before do

@@ -49,17 +49,6 @@ describe Toy::Reference do
     Game.new.should respond_to(:user=)
   end
 
-  describe "with object_id key" do
-    before(:each) do
-      User.key(:object_id)
-      @reference = Game.reference(:user)
-    end
-
-    it "sets type to BSON::ObjectId" do
-      Game.attributes['user_id'].type.should be(BSON::ObjectId)
-    end
-  end
-
   describe "#eql?" do
     it "returns true if same class, model, and name" do
       reference.should eql(reference)

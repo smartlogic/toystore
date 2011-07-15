@@ -325,7 +325,7 @@ describe Toy::Attributes do
 
     it "persists to store using abbreviation" do
       user = User.create(:twitter_access_token => '1234')
-      raw = user.store.read(user.store_key)
+      raw = user.store.read(user.id)
       raw['tat'].should == '1234'
       raw.should_not have_key('twitter_access_token')
     end
@@ -421,6 +421,27 @@ describe Toy::Attributes do
 
     it "initializes to empty array" do
       User.new.skills.should == []
+    end
+  end
+
+  # https://github.com/newtoy/toystore/issues/13
+  describe "Overriding initialize and setting an attribute before calling super" do
+    before do
+      User.attribute(:name, String)
+      User.class_eval do
+        def initialize(*)
+          self.name = 'John'
+          super
+        end
+      end
+    end
+
+    it "does not throw error" do
+      lambda { User.new }.should_not raise_error
+    end
+
+    it "sets value" do
+      User.new.name.should == 'John'
     end
   end
 end

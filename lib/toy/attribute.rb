@@ -54,7 +54,7 @@ module Toy
       options[:abbr]
     end
 
-    def store_key
+    def persisted_name
       abbr? ? abbr : name
     end
 

@@ -6,27 +6,12 @@ module Toy
       def store(name=nil, client=nil, options={})
         assert_client(name, client)
         @store = Adapter[name].new(client, options) if !name.nil? && !client.nil?
-        assert_store(name, client, 'store')
+        assert_store(name, client)
         @store
       end
 
       def has_store?
         !@store.nil?
-      end
-
-      def cache(name=nil, client=nil)
-        assert_client(name, client)
-        @cache = Adapter[name].new(client) if !name.nil? && !client.nil?
-        assert_store(name, client, 'cache')
-        @cache
-      end
-
-      def has_cache?
-        !@cache.nil?
-      end
-
-      def store_key(id)
-        id
       end
 
       def create(attrs={})
@@ -46,22 +31,14 @@ module Toy
           raise(ArgumentError, 'Client is required') if !name.nil? && client.nil?
         end
 
-        def assert_store(name, client, which)
-          raise(StandardError, "No #{which} has been set") if name.nil? && client.nil? && !send(:"has_#{which}?")
+        def assert_store(name, client)
+          raise(StandardError, "No store has been set") if name.nil? && client.nil? && !has_store?
         end
     end
 
     module InstanceMethods
       def store
         self.class.store
-      end
-
-      def cache
-        self.class.cache
-      end
-
-      def store_key
-        self.class.store_key(id)
       end
 
       def new_record?
@@ -90,10 +67,9 @@ module Toy
       end
 
       def delete
-        key = store_key
         @_destroyed = true
-        logger.debug("ToyStore DEL #{self.class.name} #{key.inspect}")
-        store.delete(key)
+        log_operation(:del, self.class.name, store, id)
+        store.delete(id)
       end
 
       private
@@ -110,14 +86,10 @@ module Toy
         end
 
         def persist!
-          key, attrs = store_key, persisted_attributes
+          attrs = persisted_attributes
           attrs.delete('id') # no need to persist id as that is key
-          if self.class.has_cache?
-            cache.write(key, attrs)
-            log_operation('WTS', self, cache, key, attrs)
-          end
-          store.write(key, attrs)
-          log_operation('SET', self, store, key, attrs)
+          store.write(id, attrs)
+          log_operation(:set, self.class.name, store, id, attrs)
           persist
           each_embedded_object { |doc| doc.send(:persist) }
           true

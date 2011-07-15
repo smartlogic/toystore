@@ -4,24 +4,8 @@ module Toy
 
     module ClassMethods
       def get(id)
-        key = store_key(id)
-
-        if has_cache?
-          value = cache.read(key)
-          log_operation('RTG', self, cache, key, value)
-        end
-
-        if value.nil?
-          value = store.read(key)
-          log_operation('GET', self, store, key, value)
-
-          if has_cache?
-            cache.write(key, value)
-            log_operation('RTS', self, cache, key, value)
-          end
-        end
-
-        load(key, value)
+        log_operation(:get, self, store, id)
+        load(id, store.read(id))
       end
 
       def get!(id)
@@ -41,15 +25,13 @@ module Toy
       end
 
       def key?(id)
-        key = store_key(id)
-        value = store.key?(key)
-        log_operation('KEY', self, store, key, value)
-        value
+        log_operation(:key, self, store, id)
+        store.key?(id)
       end
       alias :has_key? :key?
 
-      def load(key, attrs)
-        attrs && allocate.initialize_from_database(attrs.update('id' => key))
+      def load(id, attrs)
+        attrs && allocate.initialize_from_database(attrs.update('id' => id))
       end
     end
   end

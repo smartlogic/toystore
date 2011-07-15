@@ -38,9 +38,28 @@ module Toy
   def clear
     models.each do |model|
       model.store.clear         if model.has_store?
-      model.cache.clear         if model.has_cache?
       model.identity_map.clear  if model.identity_map_on?
     end
+  end
+
+  def logger
+    @logger
+  end
+
+  def logger?
+    @logger.present?
+  end
+
+  def logger=(logger)
+    @logger = logger
+  end
+
+  def key_factory=(key_factory)
+    @key_factory = key_factory
+  end
+
+  def key_factory
+    @key_factory ||= Toy::Identity::UUIDKeyFactory.new
   end
 
   module Middleware
@@ -49,7 +68,6 @@ module Toy
 end
 
 require 'toy/exceptions'
-require 'toy/connection'
 require 'toy/attribute'
 require 'toy/attributes'
 require 'toy/callbacks'

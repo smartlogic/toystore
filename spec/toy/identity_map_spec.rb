@@ -69,7 +69,7 @@ describe Toy::IdentityMap do
     it "forces new query each time and skips the identity map" do
       user = User.create
       user.should be_in_identity_map
-      User.store.should_receive(:read).with(user.store_key).and_return({})
+      User.store.should_receive(:read).with(user.id).and_return({})
       user.reload
     end
   end
@@ -117,7 +117,7 @@ describe Toy::IdentityMap do
         user = User.create
         user.should be_in_identity_map
         User.identity_map_off
-        user.store.should_receive(:read).with(user.store_key).and_return(user.persisted_attributes)
+        user.store.should_receive(:read).with(user.id).and_return(user.persisted_attributes)
         User.get(user.id)
       end
     end

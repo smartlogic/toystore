@@ -8,22 +8,22 @@ module Toy
 
     module ClassMethods
       def key(name_or_factory = :uuid)
-        @key_factory = case name_or_factory
-        when :uuid
+        @key_factory = if name_or_factory == :uuid
           UUIDKeyFactory.new
-        when :object_id
-          require 'toy/identity/object_id_key_factory'
-          ObjectIdKeyFactory.new
         else
-          if name_or_factory.respond_to?(:next_key) &&
-             name_or_factory.respond_to?(:key_type)
+          if name_or_factory.respond_to?(:next_key) && name_or_factory.respond_to?(:key_type)
             name_or_factory
           else
             raise InvalidKeyFactory.new(name_or_factory)
           end
         end
+
         attribute :id, @key_factory.key_type
         @key_factory
+      end
+
+      def key_factory
+        @key_factory || raise('Set your key_factory using key(...)')
       end
 
       def key_type

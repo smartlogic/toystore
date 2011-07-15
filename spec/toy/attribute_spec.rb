@@ -95,13 +95,13 @@ describe Toy::Attribute do
     end
   end
 
-  describe "#store_key" do
+  describe "#persisted_name" do
     it "returns abbr if abbreviated" do
-      Toy::Attribute.new(User, :age, String, :abbr => :a).store_key.should == 'a'
+      Toy::Attribute.new(User, :age, String, :abbr => :a).persisted_name.should == 'a'
     end
 
     it "returns name if not abbreviated" do
-      Toy::Attribute.new(User, :age, String).store_key.should == 'age'
+      Toy::Attribute.new(User, :age, String).persisted_name.should == 'age'
     end
   end
 

@@ -4,7 +4,7 @@ describe Toy::Plugins do
   uses_constants('User', 'Game')
 
   it "keeps track of class that include toy store" do
-    Toy.models.should == [User, Game].to_set
+    Toy.models.should == [User, Game]
   end
 
   describe ".plugin" do
@@ -27,7 +27,7 @@ describe Toy::Plugins do
     end
 
     it "adds plugin to plugins" do
-      Toy.plugins.should == [@mod].to_set
+      Toy.plugins.should == [@mod]
     end
 
     it "adds plugins to classes declared after plugin was called" do

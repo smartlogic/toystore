@@ -1,23 +1,32 @@
 module Toy
   def models
-    @models ||= Set.new
+    Toy::Store.direct_descendants
   end
 
   def plugins
-    @plugins ||= Set.new
+    Toy::Store.plugins
   end
 
   def plugin(mod)
-    Toy.models.each { |model| model.send(:include, mod) }
-    plugins << mod
+    Toy::Store.plugin(mod)
   end
 
   module Plugins
-    extend ActiveSupport::Concern
+    include ActiveSupport::DescendantsTracker
 
-    included do
-      Toy.models << self
-      Toy.plugins.each { |mod| include mod }
+    def plugins
+      @plugins ||= []
+    end
+
+    def plugin(mod)
+      include(mod)
+      direct_descendants.each {|model| model.send(:include, mod) }
+      plugins << mod
+    end
+
+    def included(base=nil, &block)
+      direct_descendants << base if base
+      super
     end
   end
 end

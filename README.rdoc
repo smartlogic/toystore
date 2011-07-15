@@ -10,7 +10,7 @@ https://groups.google.com/forum/#!forum/toystoreadapter
 
 == Identity Map
 
-By default, Toystore has identity map turned on. It assumes that any Toystore model has a unique id across all models. This means you either need to use the default uuid id's, object_id's (included), some other unique id, or create your own key factory that namespaces to model (see examples).
+By default, Toystore has identity map turned on. It assumes that any Toystore model has a unique id across all models. This means you either need to use the default uuid id's or create your own key factory that namespaces to model (see examples).
 
 You also need to clear the map before each request. For this, there is a provided piece of middleware that you can use.
 

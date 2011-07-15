@@ -11,7 +11,7 @@ describe Toy::Identity::UUIDKeyFactory do
     Toy::Identity::UUIDKeyFactory.new.next_key(nil).length.should == 36
   end
 
-  describe "Declaring key to be object_id" do
+  describe "Declaring key to be uuid" do
     before(:each) do
       User.key(:uuid)
     end

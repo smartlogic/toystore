@@ -40,8 +40,8 @@ module Toy
       end
 
       def reload
-        if attrs = store.read(store_key)
-          attrs['id'] = store_key
+        if attrs = store.read(id)
+          attrs['id'] = id
           instance_variables.each        { |ivar| instance_variable_set(ivar, nil) }
           initialize_attributes_with_defaults
           send(:attributes=, attrs, new_record?)
@@ -65,7 +65,7 @@ module Toy
         {}.tap do |attrs|
           self.class.attributes.each do |name, attribute|
             next if attribute.virtual?
-            attrs[attribute.store_key] = attribute.to_store(read_attribute(attribute.name))
+            attrs[attribute.persisted_name] = attribute.to_store(read_attribute(attribute.name))
           end
         end.merge(embedded_attributes)
       end
@@ -99,6 +99,7 @@ module Toy
 
       private
         def read_attribute(key)
+          @attributes ||= {}
           @attributes[key.to_s]
         end
 
@@ -127,7 +128,7 @@ module Toy
         end
 
         def initialize_attributes_with_defaults
-          @attributes = {}
+          @attributes ||= {}
           self.class.defaulted_attributes.each do |attribute|
             @attributes[attribute.name.to_s] = attribute.default
           end

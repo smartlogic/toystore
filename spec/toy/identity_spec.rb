@@ -8,10 +8,6 @@ describe Toy::Identity do
       User.key(:uuid).should be_instance_of(Toy::Identity::UUIDKeyFactory)
     end
 
-    it "should use ObjectIdKeyFactory if :object_id" do
-      User.key(:object_id).should be_instance_of(Toy::Identity::ObjectIdKeyFactory)
-    end
-
     it "should set key factory passed in factory" do
       factory = Toy::Identity::UUIDKeyFactory.new
       User.key(factory).should == factory
@@ -20,12 +16,9 @@ describe Toy::Identity do
     it "should use Toy.key_factory by default" do
       key_factory     = Toy::Identity::UUIDKeyFactory.new
       Toy.key_factory = key_factory
-      klass           = Class.new { include Toy::Store }
-
-      key_factory.should_receive(:next_key).and_return('some_key')
-      klass.next_key
-
-      Toy.key_factory = nil
+      Class.new do
+        include Toy::Store
+      end.key_factory.should be_instance_of(Toy::Identity::UUIDKeyFactory)
     end
   end
 
