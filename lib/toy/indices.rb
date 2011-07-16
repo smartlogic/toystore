@@ -14,7 +14,7 @@ module Toy
       def store_indices(name=nil, client=nil, options={})
         assert_client(name, client)
         @index_store = Adapter[name].new(client, options) if !name.nil? && !client.nil?
-        assert_store(name, client, 'store')
+        assert_store(name, client)
         @index_store
       end
       
