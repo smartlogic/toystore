@@ -42,15 +42,15 @@ describe Toy::Dirty do
   end
 
   it "has attribute was method" do
-    user = User.new(:name => 'John')
+    user = User.new
     user.name = 'Steve'
-    user.name_was.should == 'John'
+    user.name_was.should be_nil
   end
 
   it "has attribute change method" do
-    user = User.new(:name => 'John')
+    user = User.new
     user.name = 'Steve'
-    user.name_change.should == ['John', 'Steve']
+    user.name_change.should == [nil, 'Steve']
   end
 
   it "has attribute will change! method" do

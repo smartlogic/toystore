@@ -26,7 +26,9 @@ module Toy
       end
 
       def attribute(key, type, options = {})
-        Attribute.new(self, key, type, options)
+        attribute = Attribute.new(self, key, type, options)
+        define_attribute_methods [attribute.name]
+        attribute
       end
 
       def attribute?(key)
