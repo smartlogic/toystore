@@ -9,12 +9,19 @@ describe Toy::Plugins do
 
   describe ".plugin" do
     before do
-      class_methods_mod    = Module.new { def foo; 'foo' end }
-      instance_methods_mod = Module.new { def bar; 'bar' end }
+      @mod = Module.new {
+        extend ActiveSupport::Concern
 
-      @mod = Module.new { extend ActiveSupport::Concern }
-      @mod.const_set(:ClassMethods,    class_methods_mod)
-      @mod.const_set(:InstanceMethods, instance_methods_mod)
+        module ClassMethods
+          def foo
+            'foo'
+          end
+        end
+
+        def bar
+          'bar'
+        end
+      }
 
       Toy.plugin(@mod)
     end
