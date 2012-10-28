@@ -28,6 +28,11 @@ RSpec.configure do |c|
   c.include(Support::Objects)
   c.include(IdentityMapMatcher)
 
+  c.filter_run :focused => true
+  c.alias_example_to :fit, :focused => true
+  c.alias_example_to :xit, :pending => true
+  c.run_all_when_everything_filtered = true
+
   c.before(:each) do
     Toy::IdentityMap.enabled = false
     Toy.clear
