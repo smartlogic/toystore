@@ -26,28 +26,26 @@ end
 describe Toy::Callbacks do
   uses_constants('Game')
 
-  context "regular" do
-    before do
-      Game.send(:include, CallbackHelper)
-    end
+  before do
+    Game.send(:include, CallbackHelper)
+  end
 
-    it "runs callbacks in correct order for create" do
-      doc = Game.create
-      doc.history.should == [:before_save, :before_create, :after_create, :after_save]
-    end
+  it "runs callbacks in correct order for create" do
+    doc = Game.create
+    doc.history.should == [:before_save, :before_create, :after_create, :after_save]
+  end
 
-    it "runs callbacks in correct order for update" do
-      doc = Game.create
-      doc.clear_history
-      doc.save
-      doc.history.should == [:before_save, :before_update, :after_update, :after_save]
-    end
+  it "runs callbacks in correct order for update" do
+    doc = Game.create
+    doc.clear_history
+    doc.save
+    doc.history.should == [:before_save, :before_update, :after_update, :after_save]
+  end
 
-    it "runs callbacks in correct order for destroy" do
-      doc = Game.create
-      doc.clear_history
-      doc.destroy
-      doc.history.should == [:before_destroy, :after_destroy]
-    end
+  it "runs callbacks in correct order for destroy" do
+    doc = Game.create
+    doc.clear_history
+    doc.destroy
+    doc.history.should == [:before_destroy, :after_destroy]
   end
 end
