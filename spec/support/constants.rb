@@ -17,7 +17,7 @@ module Support
     end
 
     def create_constant(constant)
-      remove_object constant
+      remove_constant constant
       Kernel.const_set constant, ToyStore(constant)
     end
 
