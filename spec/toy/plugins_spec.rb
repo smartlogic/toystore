@@ -12,16 +12,18 @@ describe Toy::Plugins do
       @mod = Module.new {
         extend ActiveSupport::Concern
 
-        module ClassMethods
-          def foo
-            'foo'
-          end
-        end
-
         def bar
           'bar'
         end
       }
+
+      class_methods_module = Module.new do
+        def foo
+          'foo'
+        end
+      end
+
+      @mod.const_set :ClassMethods, class_methods_module
 
       Toy.plugin(@mod)
     end
