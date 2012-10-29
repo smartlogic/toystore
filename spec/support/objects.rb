@@ -18,12 +18,12 @@ module Support
 
     def create_object(object)
       remove_object object
-      Kernel.const_set object, ToyObject(object)
+      Object.const_set object, ToyObject(object)
     end
 
     def remove_object(object)
-      if Kernel.const_defined?(object)
-        Kernel.send :remove_const, object
+      if Object.const_defined?(object)
+        Object.send :remove_const, object
       end
     end
 

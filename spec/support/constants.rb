@@ -18,12 +18,12 @@ module Support
 
     def create_constant(constant)
       remove_constant constant
-      Kernel.const_set constant, ToyStore(constant)
+      Object.const_set constant, ToyStore(constant)
     end
 
     def remove_constant(constant)
-      if Kernel.const_defined?(constant)
-        Kernel.send :remove_const, constant
+      if Object.const_defined?(constant)
+        Object.send :remove_const, constant
       end
     end
 
