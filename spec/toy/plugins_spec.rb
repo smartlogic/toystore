@@ -40,7 +40,7 @@ describe Toy::Plugins do
     end
 
     it "adds plugins to classes declared after plugin was called" do
-      klass = Class.new { include Toy::Store }
+      klass = Model()
       klass.foo.should     == 'foo'
       klass.new.bar.should == 'bar'
     end
