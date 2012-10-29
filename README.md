@@ -228,8 +228,8 @@ As of 0.8.3, I started keeping a [changelog](https://github.com/jnunemaker/toyst
 
 ## Compatibility
 
-* Rails 3, Sinatra, etc. No Rails 2 (because it uses Active Model).
-* Ruby 1.8.7, 1.9.2, 1.9.3 (specs are run against each before releases)
+* Rails 3.0.*, 3.1.*, 3.2.*, Sinatra, etc. No Rails 2 (because it uses Active Model).
+* Ruby 1.8.7, REE, and 1.9.3
 
 ## Mailing List
 
