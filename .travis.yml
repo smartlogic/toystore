@@ -1,8 +1,11 @@
+gemfile:
+  - Gemfile
+  - gemfiles/rails_3_1.gemfile
+  - gemfiles/rails_3_0.gemfile
 language: ruby
 rvm:
   - 1.8.7
   - ree
-  - 1.9.2
   - 1.9.3
 notifications:
   email: false
