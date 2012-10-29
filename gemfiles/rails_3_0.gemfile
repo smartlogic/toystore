@@ -1,5 +1,5 @@
 source :rubygems
-gemspec
+gemspec :path => '../'
 
 gem 'activesupport', '~> 3.0.0'
 gem 'activemodel',   '~> 3.0.0'
