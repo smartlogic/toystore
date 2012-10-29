@@ -119,7 +119,7 @@ describe Toy::Attributes do
 
   describe "#attributes" do
     it "defaults to hash with id" do
-      attrs = Model().new.attributes
+      attrs = ToyStore().new.attributes
       attrs.keys.should == ['id']
     end
 

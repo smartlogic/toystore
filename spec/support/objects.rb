@@ -18,7 +18,7 @@ module Support
 
     def create_object(object)
       remove_object object
-      Kernel.const_set object, Object(object)
+      Kernel.const_set object, ToyObject(object)
     end
 
     def remove_object(object)
@@ -27,7 +27,7 @@ module Support
       end
     end
 
-    def Object(name = nil)
+    def ToyObject(name = nil)
       Class.new.tap do |object|
         object.class_eval """
           def self.name; '#{name}' end

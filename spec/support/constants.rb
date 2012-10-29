@@ -18,7 +18,7 @@ module Support
 
     def create_constant(constant)
       remove_object constant
-      Kernel.const_set constant, Model(constant)
+      Kernel.const_set constant, ToyStore(constant)
     end
 
     def remove_constant(constant)
@@ -27,7 +27,7 @@ module Support
       end
     end
 
-    def Model(name = nil)
+    def ToyStore(name = nil)
       Class.new.tap do |object|
         object.class_eval """
           def self.name; '#{name}' end
