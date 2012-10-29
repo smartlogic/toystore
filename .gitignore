@@ -6,3 +6,5 @@ tmp
 pkg
 .bundle
 Gemfile.lock
+bin
+vendor
