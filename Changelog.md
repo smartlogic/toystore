@@ -1,5 +1,11 @@
 I will do my best to keep this up to date with significant changes here, starting in 0.8.3.
 
+* 0.10.x => 0.11.0
+
+  * Added get_multiple which returns Hash of id pointed at instance.
+  * Aliased get_multi to get_multiple which means it now returns Hash instead of Array.
+  * Updated to latest version of adapter.
+
 * 0.10.4
   * Support for ActiveSupport/ActiveModel 3.2.*
 
