@@ -1,5 +1,4 @@
 module Toy
-
   module IdentityMap
     extend ActiveSupport::Concern
 
