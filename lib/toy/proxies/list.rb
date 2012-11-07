@@ -73,7 +73,7 @@ module Toy
 
       def find_target
         return [] if target_ids.blank?
-        proxy_class.get_multi(target_ids)
+        proxy_class.get_multiple(target_ids).values
       end
 
       def target_ids

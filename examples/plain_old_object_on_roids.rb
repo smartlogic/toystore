@@ -34,7 +34,7 @@ pp person.role # "guest"
 
 # Querying
 pp Person.get(john.id)
-pp Person.get_multi(john.id)
+pp Person.get_multiple(john.id)
 pp Person.get('NOT HERE') # nil
 pp Person.get_or_new('NOT HERE') # new person with id of 'NOT HERE'
 

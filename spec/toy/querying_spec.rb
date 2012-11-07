@@ -31,11 +31,27 @@ describe Toy::Querying do
     end
   end
 
+  describe ".get_multiple" do
+    it "returns Hash of ids pointed at result" do
+      john  = User.create(:name => 'John')
+      steve = User.create(:name => 'Steve')
+      User.get_multiple(john.id, steve.id, 'foo').should == {
+        john.id  => john,
+        steve.id => steve,
+        'foo'    => nil,
+      }
+    end
+  end
+
   describe ".get_multi" do
     it "returns array of documents" do
       john  = User.create(:name => 'John')
       steve = User.create(:name => 'Steve')
-      User.get_multi(john.id, steve.id).should == [john, steve]
+      User.get_multi(john.id, steve.id, 'foo').should == {
+        john.id  => john,
+        steve.id => steve,
+        'foo'    => nil,
+      }
     end
   end
 

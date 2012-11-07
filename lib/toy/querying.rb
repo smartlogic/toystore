@@ -13,9 +13,15 @@ module Toy
         get(id) || raise(Toy::NotFound.new(id))
       end
 
-      def get_multi(*ids)
-        ids.flatten.map { |id| get(id) }
+      def get_multiple(*ids)
+        result = adapter.read_multiple(*ids.flatten)
+        result.each do |id, attrs|
+          result[id] = attrs.nil? ? nil : load(id, attrs)
+        end
+        result
       end
+
+      alias_method :get_multi, :get_multiple
 
       def get_or_new(id)
         get(id) || new(:id => id)

@@ -93,14 +93,14 @@ describe Toy::List do
 
     it "memoizes result" do
       @user.games.should == [@game]
-      Game.should_not_receive(:get_multi)
+      Game.should_not_receive(:get_multiple)
       Game.should_not_receive(:get)
       @user.games.should == [@game]
     end
 
     it "does not query if ids attribute is blank" do
       user = User.create
-      Game.should_not_receive(:get_multi)
+      Game.should_not_receive(:get_multiple)
       Game.should_not_receive(:get)
       user.games.should == []
     end
@@ -132,19 +132,19 @@ describe Toy::List do
     end
 
     it "unmemoizes the list" do
-      games = [@game]
-      @user.games.should == games
+      games = {@game.id => @game}
+      @user.games.should == games.values
       @user.games.reset
-      Game.should_receive(:get_multi).and_return(games)
-      @user.games.should == games
+      Game.should_receive(:get_multiple).and_return(games)
+      @user.games.should == games.values
     end
 
     it "should be reset when owner is reloaded" do
-      games = [@game]
-      @user.games.should == games
+      games = {@game.id => @game}
+      @user.games.should == games.values
       @user.reload
-      Game.should_receive(:get_multi).and_return(games)
-      @user.games.should == games
+      Game.should_receive(:get_multiple).and_return(games)
+      @user.games.should == games.values
     end
   end
 
