@@ -18,6 +18,7 @@ require 'support/constants'
 require 'support/objects'
 require 'support/identity_map_matcher'
 require 'support/name_and_number_key_factory'
+require 'support/shared_active_model_lint'
 
 Logger.new(log_path.join('test.log')).tap do |log|
   Toy.logger = log

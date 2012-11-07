@@ -5,6 +5,7 @@ module Toy
     included do
       extend  ActiveModel::Naming
       include ActiveModel::Conversion
+      include ActiveModel::Validations
       include Attributes
       include Cloneable
       include Dirty

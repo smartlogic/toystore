@@ -3,6 +3,10 @@ require 'helper'
 describe Toy::Object do
   uses_objects('User')
 
+  subject { User.new }
+
+  it_should_behave_like 'ActiveModel'
+
   it "adds model naming" do
     model_name = User.model_name
     model_name.should           == 'User'

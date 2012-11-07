@@ -3,6 +3,10 @@ require 'helper'
 describe Toy::Store do
   uses_constants('User')
 
+  subject { User.new }
+
+  it_should_behave_like 'ActiveModel'
+
   describe "#to_key" do
     it "returns [id] if persisted" do
       user = User.create
