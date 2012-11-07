@@ -1,7 +1,6 @@
 module Toy
   module Callbacks
     extend ActiveSupport::Concern
-    include ActiveSupport::Callbacks
 
     included do
       extend ActiveModel::Callbacks
