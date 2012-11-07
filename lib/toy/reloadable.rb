@@ -1,5 +1,7 @@
 module Toy
   module Reloadable
+    extend ActiveSupport::Concern
+
     def reload
       if attrs = adapter.read(id)
         attrs['id'] = id
