@@ -1,7 +1,8 @@
 I will do my best to keep this up to date with significant changes here, starting in 0.8.3.
 
-* 0.11.1
+* 0.12.0
 
+  * Ruby 1.9 only. Officially not supporting Ruby 1.8.x.
   * Added :native_uuid key factory for using when your data store supports them.
   * Aliased .find and .read to .get.
   * Aliased .find_multiple and .read_multiple to .get_multiple.
