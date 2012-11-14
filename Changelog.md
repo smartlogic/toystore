@@ -1,5 +1,11 @@
 I will do my best to keep this up to date with significant changes here, starting in 0.8.3.
 
+* 0.11.1
+
+  * Added :native_uuid key factory for using when your data store supports them.
+  * Aliased .find and .read to .get.
+  * Aliased .find_multiple and .read_multiple to .get_multiple.
+
 * 0.10.x => 0.11.0
 
   * Added get_multiple which returns Hash of id pointed at instance.
