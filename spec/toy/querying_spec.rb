@@ -7,35 +7,35 @@ describe Toy::Querying do
     User.attribute :name, String
   end
 
-  describe ".get" do
+  shared_examples_for "adapter read and load instance" do |method_name|
     it "returns document if found" do
       john = User.create(:name => 'John')
-      User.get(john.id).name.should == 'John'
+      User.send(method_name, john.id).name.should == 'John'
     end
 
     it "returns nil if not found" do
-      User.get('1').should be_nil
+      User.send(method_name, '1').should be_nil
     end
   end
 
-  describe ".get!" do
+  shared_examples_for "adapter read and load instance with bang" do |method_name|
     it "returns document if found" do
       john = User.create(:name => 'John')
-      User.get!(john.id).name.should == 'John'
+      User.send(method_name, john.id).name.should == 'John'
     end
 
     it "raises not found exception if not found" do
       lambda {
-        User.get!('1')
+        User.send(method_name, '1')
       }.should raise_error(Toy::NotFound, 'Could not find document with id: "1"')
     end
   end
 
-  describe ".get_multiple" do
+  shared_examples_for "adapter read_multiple and load instances" do |method_name|
     it "returns Hash of ids pointed at result" do
       john  = User.create(:name => 'John')
       steve = User.create(:name => 'Steve')
-      User.get_multiple(john.id, steve.id, 'foo').should == {
+      User.send(method_name, john.id, steve.id, 'foo').should == {
         john.id  => john,
         steve.id => steve,
         'foo'    => nil,
@@ -43,16 +43,44 @@ describe Toy::Querying do
     end
   end
 
+  describe ".get" do
+    include_examples "adapter read and load instance", :get
+  end
+
+  describe ".read" do
+    include_examples "adapter read and load instance", :read
+  end
+
+  describe ".find" do
+    include_examples "adapter read and load instance", :find
+  end
+
+  describe ".get!" do
+    include_examples "adapter read and load instance with bang", :get!
+  end
+
+  describe ".read!" do
+    include_examples "adapter read and load instance with bang", :read!
+  end
+
+  describe ".find!" do
+    include_examples "adapter read and load instance with bang", :find!
+  end
+
+  describe ".get_multiple" do
+    include_examples "adapter read_multiple and load instances", :get_multiple
+  end
+
+  describe ".read_multiple" do
+    include_examples "adapter read_multiple and load instances", :read_multiple
+  end
+
+  describe ".find_multiple" do
+    include_examples "adapter read_multiple and load instances", :find_multiple
+  end
+
   describe ".get_multi" do
-    it "returns array of documents" do
-      john  = User.create(:name => 'John')
-      steve = User.create(:name => 'Steve')
-      User.get_multi(john.id, steve.id, 'foo').should == {
-        john.id  => john,
-        steve.id => steve,
-        'foo'    => nil,
-      }
-    end
+    include_examples "adapter read_multiple and load instances", :get_multi
   end
 
   describe ".get_or_new" do

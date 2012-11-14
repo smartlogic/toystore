@@ -9,9 +9,15 @@ module Toy
         end
       end
 
+      alias_method :read, :get
+      alias_method :find, :get
+
       def get!(id)
         get(id) || raise(Toy::NotFound.new(id))
       end
+
+      alias_method :read!, :get!
+      alias_method :find!, :get!
 
       def get_multiple(*ids)
         result = adapter.read_multiple(*ids.flatten)
@@ -22,6 +28,8 @@ module Toy
       end
 
       alias_method :get_multi, :get_multiple
+      alias_method :read_multiple, :get_multiple
+      alias_method :find_multiple, :get_multiple
 
       def get_or_new(id)
         get(id) || new(:id => id)
