@@ -10,6 +10,8 @@ module Toy
       def key(name_or_factory = :uuid)
         @key_factory = if name_or_factory == :uuid
           UUIDKeyFactory.new
+        elsif name_or_factory == :native_uuid
+          NativeUUIDKeyFactory.new
         else
           if name_or_factory.respond_to?(:next_key) && name_or_factory.respond_to?(:key_type)
             name_or_factory
