@@ -341,7 +341,6 @@ describe Toy::List do
       @user = User.create
       @game1 = @user.games.create
       @game2 = @user.games.create
-      User.get(@user.id).games.should == [@game1, @game2]
     end
 
     it "should take multiple ids" do
@@ -396,7 +395,6 @@ describe Toy::List do
       @user = User.create
       @game1 = @user.games.create
       @game2 = @user.games.create
-      User.get(@user.id).games.should == [@game1, @game2]
     end
 
     it "should destroy all" do
