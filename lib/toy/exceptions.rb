@@ -12,8 +12,8 @@ module Toy
   end
 
   class NotFound < Error
-    def initialize(id)
-      super("Could not find document with id: #{id.inspect}")
+    def initialize(*args)
+      super("Could not find document with: #{args.inspect}")
     end
   end
 

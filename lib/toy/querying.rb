@@ -3,8 +3,9 @@ module Toy
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def get(id)
-        if (attrs = adapter.read(id))
+      def get(*args)
+        id = args.first
+        if (attrs = adapter.read(*args))
           load(id, attrs)
         end
       end
@@ -12,8 +13,9 @@ module Toy
       alias_method :read, :get
       alias_method :find, :get
 
-      def get!(id)
-        get(id) || raise(Toy::NotFound.new(id))
+      def get!(*args)
+        id = args.first
+        get(*args) || raise(Toy::NotFound.new(id))
       end
 
       alias_method :read!, :get!
@@ -31,16 +33,18 @@ module Toy
       alias_method :read_multiple, :get_multiple
       alias_method :find_multiple, :get_multiple
 
-      def get_or_new(id)
-        get(id) || new(:id => id)
+      def get_or_new(*args)
+        id = args.first
+        get(*args) || new(:id => id)
       end
 
-      def get_or_create(id)
-        get(id) || create(:id => id)
+      def get_or_create(*args)
+        id = args.first
+        get(*args) || create(:id => id)
       end
 
-      def key?(id)
-        adapter.key?(id)
+      def key?(*args)
+        adapter.key?(*args)
       end
       alias :has_key? :key?
 

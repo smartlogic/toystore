@@ -16,6 +16,12 @@ describe Toy::Querying do
     it "returns nil if not found" do
       User.send(method_name, '1').should be_nil
     end
+
+    it "passes all arguments to adapter read" do
+      john = User.create(:name => 'John')
+      User.adapter.should_receive(:read).with(john.id, my: 'options').and_return({'name' => 'John'})
+      User.send(method_name, john.id, my: 'options')
+    end
   end
 
   shared_examples_for "adapter read and load instance with bang" do |method_name|
@@ -27,7 +33,13 @@ describe Toy::Querying do
     it "raises not found exception if not found" do
       lambda {
         User.send(method_name, '1')
-      }.should raise_error(Toy::NotFound, 'Could not find document with id: "1"')
+      }.should raise_error(Toy::NotFound, 'Could not find document with: ["1"]')
+    end
+
+    it "passes all arguments to adapter read" do
+      john = User.create(:name => 'John')
+      User.adapter.should_receive(:read).with(john.id, my: 'options').and_return({'name' => 'John'})
+      User.send(method_name, john.id, my: 'options')
     end
   end
 

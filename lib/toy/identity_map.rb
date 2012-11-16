@@ -44,11 +44,12 @@ module Toy
     end
 
     module ClassMethods
-      def get(id)
-        get_from_identity_map(id) || super
+      def get(*args)
+        get_from_identity_map(*args) || super
       end
 
-      def get_from_identity_map(id)
+      def get_from_identity_map(*args)
+        id = args.first
         IdentityMap.repository[id] if IdentityMap.enabled?
       end
       private :get_from_identity_map
