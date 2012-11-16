@@ -82,12 +82,6 @@ describe Toy::Validations do
       end
     end
 
-    context "with invalid option" do
-      it "raises error" do
-        lambda { User.new.save(:foobar => '') }.should raise_error
-      end
-    end
-
     context "with :validate option" do
       before do
         User.validates_presence_of(:name)

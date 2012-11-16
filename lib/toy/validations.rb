@@ -19,7 +19,6 @@ module Toy
     end
 
     def save(options={})
-      options.assert_valid_keys(:validate)
       !options.fetch(:validate, true) || valid? ? super : false
     end
 
