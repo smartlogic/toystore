@@ -9,6 +9,10 @@ module Toy
         raise NotImplementedError, "#{self.class.name}#next_key isn't implemented."
       end
 
+      def to_key(object)
+        [object.id] if object.persisted?
+      end
+
       def eql?(other)
         self.class == other.class && key_type == other.key_type
       end

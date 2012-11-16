@@ -17,5 +17,9 @@ module Toy
     def persisted?
       false
     end
+
+    def to_key
+      key_factory.to_key(self)
+    end
   end
 end
