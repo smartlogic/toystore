@@ -17,7 +17,7 @@ describe Toy::Querying do
       User.send(method_name, '1').should be_nil
     end
 
-    it "passes all arguments to adapter read" do
+    it "passes options to adapter read" do
       john = User.create(:name => 'John')
       User.adapter.should_receive(:read).with(john.id, my: 'options').and_return({'name' => 'John'})
       User.send(method_name, john.id, my: 'options')
@@ -36,7 +36,7 @@ describe Toy::Querying do
       }.should raise_error(Toy::NotFound, 'Could not find document with: ["1"]')
     end
 
-    it "passes all arguments to adapter read" do
+    it "passes options to adapter read" do
       john = User.create(:name => 'John')
       User.adapter.should_receive(:read).with(john.id, my: 'options').and_return({'name' => 'John'})
       User.send(method_name, john.id, my: 'options')
@@ -52,6 +52,23 @@ describe Toy::Querying do
         steve.id => steve,
         'foo'    => nil,
       }
+    end
+
+    it "passes options to adapter read_multiple" do
+      john = User.create(:name => 'John')
+      User.adapter.should_receive(:read_multiple).with([john.id], my: 'options').and_return({john.id => {'name' => 'John'}})
+      User.send(method_name, [john.id], my: 'options')
+    end
+  end
+
+  shared_examples_for "adapter key?" do |method_name|
+    it "returns true if key exists" do
+      user = User.create(:name => 'John')
+      User.send(method_name, user.id).should be_true
+    end
+
+    it "returns false if key does not exist" do
+      User.send(method_name, 'taco:bell:tacos').should be_false
     end
   end
 
@@ -118,25 +135,11 @@ describe Toy::Querying do
   end
 
   describe ".key?" do
-    it "returns true if key exists" do
-      user = User.create(:name => 'John')
-      User.key?(user.id).should be_true
-    end
-
-    it "returns false if key does not exist" do
-      User.key?('taco:bell:tacos').should be_false
-    end
+    include_examples "adapter key?", :key?
   end
 
   describe ".has_key?" do
-    it "returns true if key exists" do
-      user = User.create(:name => 'John')
-      User.has_key?(user.id).should be_true
-    end
-
-    it "returns false if key does not exist" do
-      User.has_key?('taco:bell:tacos').should be_false
-    end
+    include_examples "adapter key?", :has_key?
   end
 
   describe ".load" do
