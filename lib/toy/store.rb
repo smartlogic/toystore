@@ -1,7 +1,6 @@
 module Toy
   module Store
     extend ActiveSupport::Concern
-    extend Plugins
 
     include Toy::Object
     include Persistence

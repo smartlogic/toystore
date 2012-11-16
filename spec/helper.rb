@@ -36,8 +36,6 @@ RSpec.configure do |c|
 
   c.before(:each) do
     Toy::IdentityMap.enabled = false
-    Toy.clear
-    Toy.reset
     Toy.key_factory = nil
   end
 end

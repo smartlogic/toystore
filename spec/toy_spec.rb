@@ -3,21 +3,6 @@ require 'helper'
 describe Toy do
   uses_constants('User', 'Game')
 
-  describe ".clear" do
-    it "can clear all the adapters in one magical moment" do
-      user = User.create!
-      game = Game.create!
-      Toy.clear
-      User.get(user.id).should be_nil
-      Game.get(game.id).should be_nil
-    end
-
-    it "does not raise error when no default adapter set" do
-      klass = Class.new { include Toy::Store }
-      lambda { Toy.clear }.should_not raise_error
-    end
-  end
-
   describe ".logger" do
     before do
       @logger = Toy.logger
