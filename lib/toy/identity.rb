@@ -38,5 +38,9 @@ module Toy
         end
       end
     end
+
+    def key_factory
+      self.class.key_factory
+    end
   end
 end
