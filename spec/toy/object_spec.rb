@@ -35,6 +35,22 @@ describe Toy::Object do
     it "returns nil if not persisted" do
       User.new.to_key.should be_nil
     end
+
+    context "with native uuid" do
+      before do
+        User.key :native_uuid
+      end
+
+      it "returns array with guid if persisted" do
+        user = User.new
+        user.stub(:persisted?).and_return(true)
+        user.to_key.should == [user.id.to_guid]
+      end
+
+      it "returns nil if not persisted" do
+        User.new.to_key.should be_nil
+      end
+    end
   end
 
   describe "#to_param" do
