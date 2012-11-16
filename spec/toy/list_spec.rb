@@ -574,7 +574,7 @@ describe Toy::List do
     it "returns game if found" do
       lambda {
         @user.games.get!('does-not-exist')
-      }.should raise_error(Toy::NotFound, 'Could not find document with id: "does-not-exist"')
+      }.should raise_error(Toy::NotFound, 'Could not find document with: ["does-not-exist"]')
     end
 
     it "raises exception if not found" do
