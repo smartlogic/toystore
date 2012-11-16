@@ -3,9 +3,8 @@ module Toy
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def get(*args)
-        id = args.first
-        if (attrs = adapter.read(*args))
+      def get(id, options = nil)
+        if (attrs = adapter.read(id, options))
           load(id, attrs)
         end
       end
@@ -13,38 +12,34 @@ module Toy
       alias_method :read, :get
       alias_method :find, :get
 
-      def get!(*args)
-        id = args.first
-        get(*args) || raise(Toy::NotFound.new(id))
+      def get!(id, options = nil)
+        get(id, options) || raise(Toy::NotFound.new(id))
       end
 
       alias_method :read!, :get!
       alias_method :find!, :get!
 
-      def get_multiple(*ids)
-        result = adapter.read_multiple(*ids.flatten)
+      def get_multiple(ids, options = nil)
+        result = adapter.read_multiple(ids, options)
         result.each do |id, attrs|
           result[id] = attrs.nil? ? nil : load(id, attrs)
         end
         result
       end
 
-      alias_method :get_multi, :get_multiple
       alias_method :read_multiple, :get_multiple
       alias_method :find_multiple, :get_multiple
 
-      def get_or_new(*args)
-        id = args.first
-        get(*args) || new(:id => id)
+      def get_or_new(id)
+        get(id) || new(:id => id)
       end
 
-      def get_or_create(*args)
-        id = args.first
-        get(*args) || create(:id => id)
+      def get_or_create(id)
+        get(id) || create(:id => id)
       end
 
-      def key?(*args)
-        adapter.key?(*args)
+      def key?(id, options = nil)
+        adapter.key?(id, options)
       end
       alias :has_key? :key?
 

@@ -2,6 +2,17 @@
 
 I will do my best to keep this up to date with significant changes here, starting in 0.8.3.
 
+## 0.13.0
+
+* Update to adapter 0.7.0
+* Removed .get_multi
+* Change read multiple methods to take array with options.
+* Allow passing options to read methods
+* Added rails model/scaffold generators
+* Delegate #to_key to key factory. Allows non-Stringish ids to work with to_key.
+* Removed plugins
+* Removed Toy.clear and Toy.reset
+
 ## 0.12.0
 
 * Ruby 1.9 only. Officially not supporting Ruby 1.8.x.

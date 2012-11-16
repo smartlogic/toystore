@@ -47,7 +47,7 @@ describe Toy::Querying do
     it "returns Hash of ids pointed at result" do
       john  = User.create(:name => 'John')
       steve = User.create(:name => 'Steve')
-      User.send(method_name, john.id, steve.id, 'foo').should == {
+      User.send(method_name, [john.id, steve.id, 'foo']).should == {
         john.id  => john,
         steve.id => steve,
         'foo'    => nil,
@@ -89,10 +89,6 @@ describe Toy::Querying do
 
   describe ".find_multiple" do
     include_examples "adapter read_multiple and load instances", :find_multiple
-  end
-
-  describe ".get_multi" do
-    include_examples "adapter read_multiple and load instances", :get_multi
   end
 
   describe ".get_or_new" do

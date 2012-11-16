@@ -116,7 +116,7 @@ describe Toy::IdentityMap do
         user = User.create
         user.should be_in_identity_map
         Toy::IdentityMap.enabled = false
-        user.adapter.should_receive(:read).with(user.id).and_return(user.persisted_attributes)
+        user.adapter.should_receive(:read).with(user.id, nil).and_return(user.persisted_attributes)
         User.get(user.id)
       end
     end
