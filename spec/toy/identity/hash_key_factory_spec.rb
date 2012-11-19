@@ -3,30 +3,15 @@ require 'helper'
 describe Toy::Identity::HashKeyFactory do
   uses_objects('User')
 
-  let(:no_default_type) {
-    Class.new do
-      def self.to_store(value, *)
-        value
-      end
-
-      def self.from_store(value, *)
-        value
-      end
-    end
-  }
-
   let(:bucket_type) {
     Class.new do
-      def self.store_default
-        new('2012')
-      end
-
       def self.to_store(value, *)
         value
       end
 
       def self.from_store(value, *)
         return value if value.is_a?(self)
+        return value if value.nil?
         new(value)
       end
 
@@ -97,48 +82,30 @@ describe Toy::Identity::HashKeyFactory do
   end
 
   describe "#next_key" do
-    context "with all types having store defaults" do
-      it "generates key based on defaults" do
-        bucket = bucket_type.new('2012')
-        uuid = uuid_type.new
+    context "when record has no values for keys" do
+      before do
+        @key = subject.next_key(User.new)
+      end
 
-        bucket_type.should_receive(:store_default).and_return(bucket)
-        uuid_type.should_receive(:store_default).and_return(uuid)
+      it "sets keys without store_default to nil" do
+        @key[:bucket].should be_nil
+      end
 
-        key = subject.next_key(User.new)
-
-        key[:bucket].should eq(bucket)
-        key[:uuid].should eq(uuid)
+      it "sets keys with store_default to default" do
+        @key[:uuid].should be_instance_of(SimpleUUID::UUID)
       end
     end
 
     context "when record has value for keys already" do
-      it "generates key based on set values" do
-        bucket = bucket_type.new('2012')
-        uuid = uuid_type.new
-        key = subject.next_key(User.new(bucket: bucket, uuid: uuid))
-
-        key[:bucket].should be(bucket)
-        key[:uuid].should be(uuid)
+      before do
+        @bucket = bucket_type.new('2012')
+        @uuid = uuid_type.new
+        @key = subject.next_key(User.new(bucket: @bucket, uuid: @uuid))
       end
-    end
 
-    context "when record has type without default and no value for that key" do
-      subject {
-        described_class.new(required_arguments.merge({
-          attributes: {
-            bucket: no_default_type,
-            uuid: uuid_type,
-          }
-        }))
-      }
-
-      it "sets key to nil" do
-        uuid = uuid_type.new
-        key = subject.next_key(User.new(uuid: uuid))
-
-        key[:bucket].should be_nil
-        key[:uuid].should be(uuid)
+      it "sets keys to values" do
+        @key[:bucket].should be(@bucket)
+        @key[:uuid].should be(@uuid)
       end
     end
   end
@@ -188,6 +155,37 @@ describe Toy::Identity::HashKeyFactory do
       User.attributes['id'].type.should be(Hash)
     end
 
+    describe "id?" do
+      it "returns false if any value is blank" do
+        user = User.new
+        user.bucket = nil
+        user.id?.should be_false
+      end
+
+      it "returns true if all values are present" do
+        user = User.new
+        user.bucket = bucket_type.new('2011')
+        user.uuid = uuid_type.new
+        user.id?.should be_true
+      end
+    end
+
+    context "initializing with only one virtual attribute" do
+      before do
+        @bucket = bucket_type.new('2011')
+        @user = User.new(bucket: @bucket)
+      end
+
+      it "sets virtual attribute" do
+        @user.bucket.should be(@bucket)
+      end
+
+      it "defaults unassigned virtual attributes" do
+        @user.id[:uuid].should be_instance_of(SimpleUUID::UUID)
+        @user.uuid.should be_instance_of(SimpleUUID::UUID)
+      end
+    end
+
     context "assigning one of the Hash's virtual attributes" do
       before do
         @user = User.new
@@ -212,7 +210,7 @@ describe Toy::Identity::HashKeyFactory do
       end
     end
 
-    context "updating id" do
+    context "assigning id" do
       before do
         @user = User.new
         @bucket = bucket_type.new('2011')
@@ -230,7 +228,7 @@ describe Toy::Identity::HashKeyFactory do
       end
     end
 
-    context "updating id with not type that gets typecast" do
+    context "assigning id with value that needs to be typecast" do
       before do
         @user = User.new
         @bucket = bucket_type.new('2011')
