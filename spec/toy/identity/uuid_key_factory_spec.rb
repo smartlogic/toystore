@@ -13,11 +13,11 @@ describe Toy::Identity::UUIDKeyFactory do
 
   describe "#eql?" do
     it "returns true for same class and key type" do
-      subject.eql?(Toy::Identity::UUIDKeyFactory.new).should be_true
+      subject.eql?(described_class.new).should be_true
     end
 
     it "returns false for same class and different key type" do
-      other = Toy::Identity::UUIDKeyFactory.new
+      other = described_class.new
       other.stub(:key_type).and_return(Integer)
       subject.eql?(other).should be_false
     end
@@ -29,11 +29,11 @@ describe Toy::Identity::UUIDKeyFactory do
 
   describe "#==" do
     it "returns true for same class and key type" do
-      subject.==(Toy::Identity::UUIDKeyFactory.new).should be_true
+      subject.==(described_class.new).should be_true
     end
 
     it "returns false for same class and different key type" do
-      other = Toy::Identity::UUIDKeyFactory.new
+      other = described_class.new
       other.stub(:key_type).and_return(Integer)
       subject.==(other).should be_false
     end
