@@ -51,6 +51,39 @@ describe Toy::Object do
         User.new.to_key.should be_nil
       end
     end
+
+    context "with hash" do
+      before do
+        User.key :hash, attributes: {location: String, name: String}
+      end
+
+      it "returns array with guid if persisted" do
+        user = User.new(location: 'IN', name: 'John')
+        user.stub(:persisted?).and_return(true)
+        user.to_key.should == ['IN', 'John']
+      end
+
+      it "returns nil if not persisted" do
+        User.new.to_key.should be_nil
+      end
+    end
+
+    context "with hash with uuid type" do
+      before do
+        User.key :hash, attributes: {bucket: String, track_id: SimpleUUID::UUID}
+      end
+
+      it "returns array with guid if persisted" do
+        id = SimpleUUID::UUID.new
+        user = User.new(bucket: '2012', track_id: id)
+        user.stub(:persisted?).and_return(true)
+        user.to_key.should == ['2012', id.to_guid]
+      end
+
+      it "returns nil if not persisted" do
+        User.new.to_key.should be_nil
+      end
+    end
   end
 
   describe "#to_param" do

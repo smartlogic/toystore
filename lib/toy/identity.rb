@@ -7,11 +7,13 @@ module Toy
     end
 
     module ClassMethods
-      def key(name_or_factory = :uuid)
+      def key(name_or_factory = :uuid, options = {})
         @key_factory = if name_or_factory == :uuid
           UUIDKeyFactory.new
         elsif name_or_factory == :native_uuid
           NativeUUIDKeyFactory.new
+        elsif name_or_factory == :hash
+          HashKeyFactory.new(options.merge(:model => self))
         else
           if name_or_factory.respond_to?(:next_key) && name_or_factory.respond_to?(:key_type)
             name_or_factory

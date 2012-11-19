@@ -72,6 +72,7 @@ module Toy
     autoload 'AbstractKeyFactory',    'toy/identity/abstract_key_factory'
     autoload 'UUIDKeyFactory',        'toy/identity/uuid_key_factory'
     autoload 'NativeUUIDKeyFactory',  'toy/identity/native_uuid_key_factory'
+    autoload 'HashKeyFactory',        'toy/identity/hash_key_factory'
   end
 end
 
