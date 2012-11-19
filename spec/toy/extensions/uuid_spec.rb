@@ -1,29 +1,38 @@
 require 'helper'
 
-describe "SimpleUUID::UUID.to_store" do
-  it "returns value if value is already uuid" do
-    uuid = SimpleUUID::UUID.new
-    SimpleUUID::UUID.to_store(uuid).should be(uuid)
-  end
-
-  it "converts value to uuid if not already uuid" do
-    uuid = SimpleUUID::UUID.new
-    [uuid.to_guid, uuid.to_s, uuid.to_i].each do |value|
-      SimpleUUID::UUID.from_store(value).should eq(uuid)
+describe SimpleUUID::UUID do
+  describe ".store_default" do
+    it "returns new instance of simple uuid" do
+      value = described_class.store_default
+      value.should be_instance_of(described_class)
     end
   end
-end
 
-describe "SimpleUUID::UUID.from_store" do
-  it "returns value if value is already uuid" do
-    uuid = SimpleUUID::UUID.new
-    SimpleUUID::UUID.from_store(uuid).should be(uuid)
+  describe ".to_store" do
+    it "returns value if value is already uuid" do
+      uuid = described_class.new
+      described_class.to_store(uuid).should be(uuid)
+    end
+
+    it "converts value to uuid if not already uuid" do
+      uuid = described_class.new
+      [uuid.to_guid, uuid.to_s, uuid.to_i].each do |value|
+        described_class.from_store(value).should eq(uuid)
+      end
+    end
   end
 
-  it "converts value to uuid if not already uuid" do
-    uuid = SimpleUUID::UUID.new
-    [uuid.to_guid, uuid.to_s, uuid.to_i].each do |value|
-      SimpleUUID::UUID.from_store(value).should eq(uuid)
+  describe ".from_store" do
+    it "returns value if value is already uuid" do
+      uuid = described_class.new
+      described_class.from_store(uuid).should be(uuid)
+    end
+
+    it "converts value to uuid if not already uuid" do
+      uuid = described_class.new
+      [uuid.to_guid, uuid.to_s, uuid.to_i].each do |value|
+        described_class.from_store(value).should eq(uuid)
+      end
     end
   end
 end
