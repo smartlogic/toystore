@@ -54,7 +54,9 @@ module Toy
       {}.tap do |attrs|
         self.class.attributes.except('id').each do |name, attribute|
           next if attribute.virtual?
-          attrs[attribute.persisted_name] = attribute.to_store(read_attribute(attribute.name))
+          value = attribute.to_store(read_attribute(attribute.name))
+          next if value.nil?
+          attrs[attribute.persisted_name] = value
         end
       end
     end

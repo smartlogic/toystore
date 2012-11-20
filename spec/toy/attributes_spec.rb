@@ -21,11 +21,13 @@ describe Toy::Attributes do
       @score   = Game.attribute(:creator_score, Integer, :virtual => true)
       @abbr    = Game.attribute(:super_secret_hash, String, :abbr => :ssh)
       @rewards = Game.attribute(:rewards, Set)
+      @time    = Game.attribute(:time, Time)
       @game    = Game.new({
         :over          => true,
         :creator_score => 20,
         :rewards       => %w(twigs berries).to_set,
         :ssh           => 'h4x',
+        :time          => nil,
       })
     end
 
@@ -48,6 +50,10 @@ describe Toy::Attributes do
     it "includes to_store values for attributes" do
       @game.persisted_attributes['rewards'].should be_instance_of(Array)
       @game.persisted_attributes['rewards'].should == @rewards.to_store(@game.rewards)
+    end
+
+    it "does not include nil attributes" do
+      @game.persisted_attributes.should_not have_key('time')
     end
   end
 
