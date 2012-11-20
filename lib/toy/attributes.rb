@@ -22,14 +22,15 @@ module Toy
       end
 
       def defaulted_attributes
-        attributes.values.select(&:default?)
+        @defaulted_attributes ||= attributes.values.select(&:default?)
       end
 
       def persisted_attributes
-        attributes.values.select { |attribute| attribute.persisted? }
+        @persisted_attributes ||= attributes.values.select(&:persisted?)
       end
 
       def attribute(key, type, options = {})
+        @defaulted_attributes = @persisted_attributes = nil
         attribute = Attribute.new(self, key, type, options)
         define_attribute_methods [attribute.name]
         attribute

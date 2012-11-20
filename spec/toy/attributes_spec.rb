@@ -70,6 +70,22 @@ describe Toy::Attributes do
     it "excludes attributes without a default" do
       User.defaulted_attributes.should_not include(@name)
     end
+
+    it "memoizes after first call" do
+      User.should_receive(:attributes).once.and_return({
+        'name' => @name,
+        'age' => @age,
+      })
+      User.defaulted_attributes
+      User.defaulted_attributes
+      User.defaulted_attributes
+    end
+
+    it "is unmemoized when declaring a new attribute" do
+      User.defaulted_attributes
+      age = User.attribute :location, String, :default => 'IN'
+      User.defaulted_attributes.map(&:name).sort.should eq(%w[age location])
+    end
   end
 
   describe ".persisted_attributes" do
@@ -84,6 +100,22 @@ describe Toy::Attributes do
 
     it "excludes attributes that are virtual" do
       User.persisted_attributes.should_not include(@password)
+    end
+
+    it "memoizes after first call" do
+      User.should_receive(:attributes).once.and_return({
+        'name' => @name,
+        'password' => @password,
+      })
+      User.persisted_attributes
+      User.persisted_attributes
+      User.persisted_attributes
+    end
+
+    it "is unmemoized when declaring a new attribute" do
+      User.persisted_attributes
+      age = User.attribute :age, Integer
+      User.persisted_attributes.map(&:name).sort.should eq(%w[age name])
     end
   end
 
