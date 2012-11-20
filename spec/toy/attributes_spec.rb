@@ -72,6 +72,21 @@ describe Toy::Attributes do
     end
   end
 
+  describe ".persisted_attributes" do
+    before do
+      @name = User.attribute(:name, String)
+      @password = User.attribute(:password, String, :virtual => true)
+    end
+
+    it "includes attributes that are not virtual" do
+      User.persisted_attributes.should include(@name)
+    end
+
+    it "excludes attributes that are virtual" do
+      User.persisted_attributes.should_not include(@password)
+    end
+  end
+
   describe ".attribute?" do
     before do
       User.attribute :age, Integer
