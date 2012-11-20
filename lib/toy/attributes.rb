@@ -55,13 +55,13 @@ module Toy
     end
 
     def persisted_attributes
-      {}.tap do |attrs|
-        self.class.persisted_attributes.each do |attribute|
-          if (value = attribute.to_store(read_attribute(attribute.name)))
-            attrs[attribute.persisted_name] = value
-          end
+      attributes = {}
+      self.class.persisted_attributes.each do |attribute|
+        if (value = attribute.to_store(read_attribute(attribute.name)))
+          attributes[attribute.persisted_name] = value
         end
       end
+      attributes
     end
 
     def attributes=(attrs, *)
