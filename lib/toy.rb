@@ -68,6 +68,10 @@ module Toy
   autoload 'References',              'toy/references'
   autoload 'Identity',                'toy/identity'
 
+  module Types
+    autoload 'JSON', 'toy/types/json'
+  end
+
   module Identity
     autoload 'AbstractKeyFactory',    'toy/identity/abstract_key_factory'
     autoload 'UUIDKeyFactory',        'toy/identity/uuid_key_factory'
