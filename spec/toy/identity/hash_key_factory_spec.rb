@@ -1,12 +1,12 @@
 require 'helper'
 
 describe Toy::Identity::HashKeyFactory do
-  uses_objects('User')
+  uses_constants('Track')
 
   let(:bucket_type) {
     Class.new do
-      def self.to_store(value, *)
-        value
+      def self.to_store(instance, *)
+        instance.value
       end
 
       def self.from_store(value, *)
@@ -48,13 +48,13 @@ describe Toy::Identity::HashKeyFactory do
   }
 
   let(:required_arguments) {
-    {model: User, attributes: {bucket: bucket_type, uuid: uuid_type}}
+    {model: Track, attributes: {bucket: bucket_type, uuid: uuid_type}}
   }
 
   subject { described_class.new(required_arguments) }
 
   before do
-    User.key subject
+    Track.key subject
   end
 
   describe "#initialize" do
@@ -75,8 +75,8 @@ describe Toy::Identity::HashKeyFactory do
     it "defines virtual attributes for each attribute" do
       described_class.new(required_arguments)
       required_arguments[:attributes].each_key do |name|
-        User.attributes.should have_key(name.to_s)
-        User.attributes[name.to_s].should be_virtual
+        Track.attributes.should have_key(name.to_s)
+        Track.attributes[name.to_s].should be_virtual
       end
     end
   end
@@ -84,7 +84,7 @@ describe Toy::Identity::HashKeyFactory do
   describe "#next_key" do
     context "when record has no values for keys" do
       before do
-        @key = subject.next_key(User.new)
+        @key = subject.next_key(Track.new)
       end
 
       it "sets keys without store_default to nil" do
@@ -100,7 +100,7 @@ describe Toy::Identity::HashKeyFactory do
       before do
         @bucket = bucket_type.new('2012')
         @uuid = uuid_type.new
-        @key = subject.next_key(User.new(bucket: @bucket, uuid: @uuid))
+        @key = subject.next_key(Track.new(bucket: @bucket, uuid: @uuid))
       end
 
       it "sets keys to values" do
@@ -144,107 +144,107 @@ describe Toy::Identity::HashKeyFactory do
 
   describe "Declaring key to be hash" do
     before do
-      User.key :hash, required_arguments.reject { |key| key == :model }
+      Track.key :hash, required_arguments.reject { |key| key == :model }
     end
 
     it "returns Hash as .key_type" do
-      User.key_type.should be(Hash)
+      Track.key_type.should be(Hash)
     end
 
     it "sets id attribute to Hash type" do
-      User.attributes['id'].type.should be(Hash)
+      Track.attributes['id'].type.should be(Hash)
     end
 
-    describe "id?" do
+    describe "#id?" do
       it "returns false if any value is blank" do
-        user = User.new
-        user.bucket = nil
-        user.id?.should be_false
+        track = Track.new
+        track.bucket = nil
+        track.id?.should be_false
       end
 
       it "returns true if all values are present" do
-        user = User.new
-        user.bucket = bucket_type.new('2011')
-        user.uuid = uuid_type.new
-        user.id?.should be_true
+        track = Track.new
+        track.bucket = bucket_type.new('2011')
+        track.uuid = uuid_type.new
+        track.id?.should be_true
       end
     end
 
     context "initializing with only one virtual attribute" do
       before do
         @bucket = bucket_type.new('2011')
-        @user = User.new(bucket: @bucket)
+        @track = Track.new(bucket: @bucket)
       end
 
       it "sets virtual attribute" do
-        @user.bucket.should be(@bucket)
+        @track.bucket.should be(@bucket)
       end
 
       it "defaults unassigned virtual attributes" do
-        @user.id[:uuid].should be_instance_of(SimpleUUID::UUID)
-        @user.uuid.should be_instance_of(SimpleUUID::UUID)
+        @track.id[:uuid].should be_instance_of(SimpleUUID::UUID)
+        @track.uuid.should be_instance_of(SimpleUUID::UUID)
       end
     end
 
     context "assigning one of the Hash's virtual attributes" do
       before do
-        @user = User.new
+        @track = Track.new
         @bucket = bucket_type.new('2011')
-        @user.bucket = @bucket
+        @track.bucket = @bucket
       end
 
       it "sets virtual attribute" do
-        @user.bucket.should be(@bucket)
+        @track.bucket.should be(@bucket)
       end
 
       it "marks that the virtual attribute has changed" do
-        @user.bucket_changed?.should be_true
+        @track.bucket_changed?.should be_true
       end
 
       it "updates id" do
-        @user.id[:bucket].should be(@bucket)
+        @track.id[:bucket].should be(@bucket)
       end
 
       it "marks that id has changed" do
-        @user.id_changed?.should be_true
+        @track.id_changed?.should be_true
       end
     end
 
-    context "assigning id" do
+    context "#id=" do
       before do
-        @user = User.new
+        @track = Track.new
         @bucket = bucket_type.new('2011')
         @uuid = uuid_type.new
-        @user.id = {bucket: @bucket, uuid: @uuid}
+        @track.id = {bucket: @bucket, uuid: @uuid}
       end
 
       it "updates id" do
-        @user.id.should eq({bucket: @bucket, uuid: @uuid})
+        @track.id.should eq({bucket: @bucket, uuid: @uuid})
       end
 
       it "updates virtual attributes" do
-        @user.bucket.should eq(@bucket)
-        @user.uuid.should eq(@uuid)
+        @track.bucket.should eq(@bucket)
+        @track.uuid.should eq(@uuid)
       end
     end
 
-    context "assigning id with value that needs to be typecast" do
+    context "#id= with value that needs to be typecast" do
       before do
-        @user = User.new
+        @track = Track.new
         @bucket = bucket_type.new('2011')
         @uuid = uuid_type.new
-        @user.id = {bucket: '2011', uuid: @uuid}
+        @track.id = {bucket: '2011', uuid: @uuid}
       end
 
       it "correctly typecasts value in id" do
-        bucket = @user.id[:bucket]
+        bucket = @track.id[:bucket]
         bucket.should be_instance_of(bucket_type)
         bucket.should eq(@bucket)
       end
 
       it "updates virtual attributes" do
-        @user.bucket.should eq(@bucket)
-        @user.uuid.should eq(@uuid)
+        @track.bucket.should eq(@bucket)
+        @track.uuid.should eq(@uuid)
       end
     end
   end
