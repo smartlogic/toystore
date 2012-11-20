@@ -22,7 +22,7 @@ module Toy
           end
         end
 
-        attribute :id, @key_factory.key_type
+        attribute :id, @key_factory.key_type, :virtual => true
         @key_factory
       end
 
