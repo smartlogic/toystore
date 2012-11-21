@@ -64,7 +64,7 @@ describe Toy::Identity::CompositeKeyFactory do
   subject { described_class.new(required_arguments) }
 
   describe "#initialize" do
-    fit "requires :attributes" do
+    it "requires :attributes" do
       args = required_arguments.reject { |key| key == :attributes }
       expect {
         described_class.new(args)
@@ -74,7 +74,7 @@ describe Toy::Identity::CompositeKeyFactory do
 
   describe "#next_key" do
     context "for type with store_default" do
-      fit "generates composite instance with keys set to store defaults" do
+      it "generates composite instance with keys set to store defaults" do
         Track.key subject
         key = subject.next_key(Track.new)
 
@@ -86,7 +86,7 @@ describe Toy::Identity::CompositeKeyFactory do
     end
 
     context "for type without store_default" do
-      fit "generates composite instance" do
+      it "generates composite instance" do
         instance = described_class.new(required_arguments.merge({
           attributes: {name: String, uuid: uuid_type},
         }))
@@ -106,12 +106,12 @@ describe Toy::Identity::CompositeKeyFactory do
       Track.key :composite, attributes: {bucket: bucket_type, uuid: uuid_type}
     end
 
-    fit "returns composite instance with attributes set as .key_type" do
+    it "returns composite instance with attributes set as .key_type" do
       Track.key_type.should be_instance_of(Toy::Types::Composite)
       Track.key_type.attributes.should eq(bucket: bucket_type, uuid: uuid_type)
     end
 
-    fit "sets id attribute to composite type" do
+    it "sets id attribute to composite type" do
       Track.attributes['id'].type.should be_instance_of(Toy::Types::Composite)
     end
 
@@ -121,11 +121,11 @@ describe Toy::Identity::CompositeKeyFactory do
         @track = Track.new(id: {bucket: @bucket})
       end
 
-      fit "sets assigned attributes" do
+      it "sets assigned attributes" do
         @track.id.bucket.should be(@bucket)
       end
 
-      fit "defaults unassigned attributes" do
+      it "defaults unassigned attributes" do
         @track.id.uuid.should be_instance_of(uuid_type)
       end
     end
@@ -138,7 +138,7 @@ describe Toy::Identity::CompositeKeyFactory do
         @track.id = {bucket: @bucket, uuid: @uuid}
       end
 
-      fit "updates id" do
+      it "updates id" do
         @track.id.bucket.should eq(@bucket)
         @track.id.uuid.should eq(@uuid)
       end
@@ -152,7 +152,7 @@ describe Toy::Identity::CompositeKeyFactory do
         @track.id = {bucket: '2011', uuid: @uuid}
       end
 
-      fit "correctly typecasts value in id" do
+      it "correctly typecasts value in id" do
         bucket = @track.id[:bucket]
         bucket.should be_instance_of(bucket_type)
         bucket.should eq(@bucket)
@@ -167,7 +167,7 @@ describe Toy::Identity::CompositeKeyFactory do
         @track = Track.new(id: @track_id)
       end
 
-      fit "calls to_store on id values" do
+      it "calls to_store on id values" do
         persisted_id = {bucket: '2011', uuid: @uuid}
         persisted_attributes = {}
         @track.adapter.should_receive(:write).with(persisted_id, persisted_attributes)
