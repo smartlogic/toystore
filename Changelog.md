@@ -2,6 +2,14 @@
 
 I will do my best to keep this up to date with significant changes here, starting in 0.8.3.
 
+## 0.14.0
+
+* No longer persisting nil attributes
+* Added Toy::Types::JSON for storing serialized JSON as an attribute value
+* Added #persisted_id and made it public so people can override confidently. It is now used in adapter.write and adapter.delete.
+* Made #persist method public so people can override confidently.
+* Moved Identity to Toy::Store from Toy::Object
+
 ## 0.13.0
 
 * Update to adapter 0.7.0
