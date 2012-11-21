@@ -354,4 +354,22 @@ describe Toy::Persistence do
       user.clone.should_not be_destroyed
     end
   end
+
+  describe "#persisted_id" do
+    it "returns id attribute value converted for storage" do
+      raw_value = 1
+      typecast_for_store_value = '1'
+      user = User.new(:id => raw_value)
+      user.persisted_id.should eq(typecast_for_store_value)
+    end
+  end
+
+  describe "#persist" do
+    it "calls write on adapter with persisted id and attributes" do
+      user = User.new
+      user.stub(persisted_id: 1, persisted_attributes: {one: 'two'})
+      user.adapter.should_receive(:write).with(1, {one: 'two'})
+      user.persist
+    end
+  end
 end

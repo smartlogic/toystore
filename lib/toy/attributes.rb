@@ -92,10 +92,8 @@ module Toy
 
     def write_attribute(key, value)
       key = key.to_s
-      attribute = self.class.attributes.fetch(key) {
-        raise AttributeNotDefined, "#{self.class} does not have attribute #{key}"
-      }
-      @attributes[key.to_s] = attribute.from_store(value)
+      attribute = attribute_instance(key)
+      @attributes[key] = attribute.from_store(value)
     end
 
     def attribute_method?(key)
@@ -112,6 +110,12 @@ module Toy
 
     def attribute?(key)
       read_attribute(key).present?
+    end
+
+    def attribute_instance(key)
+      self.class.attributes.fetch(key) {
+        raise AttributeNotDefined, "#{self.class} does not have attribute #{key}"
+      }
     end
 
     def initialize_attributes

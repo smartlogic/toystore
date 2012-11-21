@@ -84,6 +84,19 @@ module Toy
       adapter.delete(id)
     end
 
+    # Public: Choke point for overriding what id is used to write and delete.
+    def persisted_id
+      attribute_name = 'id'
+      attribute = attribute_instance(attribute_name)
+      attribute_value = read_attribute(attribute_name)
+      attribute.to_store(attribute_value)
+    end
+
+    # Public: Choke point for overriding how data gets written.
+    def persist
+      adapter.write(persisted_id, persisted_attributes)
+    end
+
     private
 
     def create
@@ -95,12 +108,6 @@ module Toy
     def update
       persist
       true
-    end
-
-    def persist
-      attribute = self.class.attributes['id']
-      persisted_id = attribute.to_store(id)
-      adapter.write(persisted_id, persisted_attributes)
     end
   end
 end
