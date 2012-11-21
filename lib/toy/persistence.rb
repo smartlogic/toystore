@@ -81,7 +81,7 @@ module Toy
 
     def delete
       @_destroyed = true
-      adapter.delete(id)
+      adapter.delete(persisted_id)
     end
 
     # Public: Choke point for overriding what id is used to write and delete.

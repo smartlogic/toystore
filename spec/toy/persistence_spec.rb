@@ -318,6 +318,13 @@ describe Toy::Persistence do
       doc.delete
       User.key?(doc.id).should be_false
     end
+
+    it "uses persisted id for adapter delete" do
+      user = User.new
+      user.stub(:persisted_id => 1)
+      user.adapter.should_receive(:delete).with(1)
+      user.delete
+    end
   end
 
   describe "#destroy" do
