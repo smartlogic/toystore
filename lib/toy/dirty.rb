@@ -5,12 +5,6 @@ module Toy
     include Attributes
     include Cloneable
 
-    def initialize(*)
-      super
-      # never register initial id assignment as a change
-      @changed_attributes.delete('id') if @changed_attributes
-    end
-
     def initialize_copy(*)
       super.tap do
         @previously_changed = {}

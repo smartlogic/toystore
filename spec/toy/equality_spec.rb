@@ -1,39 +1,38 @@
 require 'helper'
 
 describe Toy::Equality do
-  uses_objects('User', 'Person')
+  uses_objects('User')
 
-  describe "#eql?" do
-    it "returns true if same class and id" do
-      User.new(:id => 1).should eql(User.new(:id => 1))
+  before do
+    User.attribute :name, String
+  end
+
+  shared_examples_for 'object equality' do |method_name|
+    it "returns true if same class and attributes" do
+      User.new(:name => 'John').send(method_name, User.new(:name => 'John')).should be_true
     end
 
     it "return false if different class" do
-      User.new(:id => 1).should_not eql(Person.new(:id => 1))
+      User.new(:name => 'John').send(method_name, Object.new).should be_false
     end
 
-    it "returns false if different id" do
-      User.new(:id => 1).should_not eql(User.new(:id => 2))
+    it "returns false if different attributes" do
+      User.new(:name => 'John').send(method_name, User.new(:name => 'Steve')).should be_false
     end
   end
 
-  describe "#equal?" do
-    it "returns true if same object" do
-      user = User.new(:id => 1)
-      user.should equal(user)
-    end
+  describe "#eql?" do
+    include_examples 'object equality', :eql?
+  end
 
-    it "returns false if not same object" do
-      user = User.new
-      other_user = User.new
-      user.should_not equal(other_user)
-    end
+  describe "#==" do
+    include_examples 'object equality', :==
   end
 
   describe "#hash" do
-    it "returns the hash of the id" do
+    it "returns the hash of the attributes" do
       user = User.new
-      user.hash.should eq(user.id.hash)
+      user.hash.should eq(user.attributes.hash)
     end
   end
 end

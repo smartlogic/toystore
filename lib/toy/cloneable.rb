@@ -13,8 +13,6 @@ module Toy
         value = value.duplicable? ? value.clone : value
         send("#{key}=", value)
       end
-
-      write_attribute(:id, self.class.next_key(self))
     end
   end
 end

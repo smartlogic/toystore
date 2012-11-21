@@ -42,5 +42,42 @@ module Toy
     def key_factory
       self.class.key_factory
     end
+
+    def initialize(*args)
+      super
+      write_attribute :id, self.class.next_key(self) unless id?
+
+      # never register initial id assignment as a change
+      @changed_attributes.delete('id') if @changed_attributes
+    end
+
+    def initialize_copy(*args)
+      super
+      write_attribute :id, self.class.next_key(self)
+    end
+
+    def eql?(other)
+      return true if self.class.eql?(other.class) &&
+                      id == other.id
+
+      return true if other.respond_to?(:target) &&
+                       self.class.eql?(other.target.class) &&
+                       id == other.target.id
+
+      super
+    end
+
+    alias_method :==, :eql?
+
+    def equal?(other)
+      if other.respond_to?(:proxy_respond_to?) && other.respond_to?(:target)
+        other = other.target
+      end
+      super other
+    end
+
+    def to_key
+      key_factory.to_key(self)
+    end
   end
 end

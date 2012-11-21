@@ -4,8 +4,6 @@ module Toy
     include ActiveModel::AttributeMethods
 
     included do
-      include Identity
-
       # blank suffix is no longer needed in 3.2+
       # open to suggestions on how to do this better
       if ActiveSupport::VERSION::MAJOR == 3 && ActiveSupport::VERSION::MINOR < 2
@@ -40,11 +38,6 @@ module Toy
     def initialize(attrs={})
       initialize_attributes
       self.attributes = attrs
-      write_attribute :id, self.class.next_key(self) unless id?
-    end
-
-    def id
-      read_attribute(:id)
     end
 
     def attributes

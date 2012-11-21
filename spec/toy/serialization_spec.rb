@@ -13,7 +13,6 @@ describe Toy::Serialization do
     MultiJson.load(doc.to_json).should == {
       'user' => {
         'name' => 'John',
-        'id' => doc.id,
         'age' => 28
       }
     }
@@ -24,7 +23,6 @@ describe Toy::Serialization do
     Hash.from_xml(doc.to_xml).should == {
       'user' => {
         'name' => 'John',
-        'id' => doc.id,
         'age' => 28
       }
     }
@@ -41,27 +39,27 @@ describe Toy::Serialization do
   end
 
   it "allows using :only" do
-    user = User.new
-    json = user.to_json(:only => :id)
-    MultiJson.load(json).should == {'user' => {'id' => user.id}}
+    user = User.new(:name => 'John', :age => 30)
+    json = user.to_json(:only => :name)
+    MultiJson.load(json).should == {'user' => {'name' => user.name}}
   end
 
   it "allows using :only with strings" do
-    user = User.new
-    json = user.to_json(:only => 'id')
-    MultiJson.load(json).should == {'user' => {'id' => user.id}}
+    user = User.new(:name => 'John', :age => 30)
+    json = user.to_json(:only => 'name')
+    MultiJson.load(json).should == {'user' => {'name' => user.name}}
   end
 
   it "allows using :except" do
-    user = User.new
-    json = user.to_json(:except => :id)
-    MultiJson.load(json)['user'].should_not have_key('id')
+    user = User.new(:name => 'John', :age => 30)
+    json = user.to_json(:except => :name)
+    MultiJson.load(json)['user'].should_not have_key('name')
   end
 
   it "allows using :except with strings" do
-    user = User.new
-    json = user.to_json(:except => 'id')
-    MultiJson.load(json)['user'].should_not have_key('id')
+    user = User.new(:name => 'John', :age => 30)
+    json = user.to_json(:except => 'name')
+    MultiJson.load(json)['user'].should_not have_key('name')
   end
 
   describe "serializing specific attributes" do
@@ -73,7 +71,7 @@ describe Toy::Serialization do
 
     it "should default to all attributes" do
       move = Move.new(:index => 0, :points => 15, :words => ['QI', 'XI'])
-      move.serializable_attributes.should == [:id, :index, :points, :words]
+      move.serializable_attributes.should == [:index, :points, :words]
     end
 
     it "should be set per model" do
@@ -85,7 +83,7 @@ describe Toy::Serialization do
       end
 
       move = Move.new(:index => 0, :points => 15, :words => ['QI', 'XI'])
-      move.serializable_attributes.should == [:id, :points, :words]
+      move.serializable_attributes.should == [:points, :words]
     end
 
     it "should only serialize specified attributes" do
@@ -99,7 +97,6 @@ describe Toy::Serialization do
       move = Move.new(:index => 0, :points => 15, :words => ['QI', 'XI'])
       MultiJson.load(move.to_json).should == {
        'move' => {
-         'id'     => move.id,
          'points' => 15,
          'words'  => ["QI", "XI"]
         }
@@ -121,7 +118,6 @@ describe Toy::Serialization do
       move = Move.new(:index => 0, :points => 15, :words => ['QI', 'XI'])
       MultiJson.load(move.to_json).should == {
        'move' => {
-         'id'                   => move.id,
          'index'                => 0,
          'points'               => 15,
          'words'                => ["QI", "XI"],
@@ -137,12 +133,11 @@ describe Toy::Serialization do
         Move.class_eval { attr_accessor :creator }
       end
 
-      let(:move) { Move.new(:creator => User.new) }
+      let(:move) { Move.new(:creator => User.new(:name => 'John')) }
 
       it "returns serializable hash of object" do
         move.serializable_hash(:methods => [:creator]).should == {
-          'id'         => move.id,
-          'creator'    => {'id' => move.creator.id}
+          'creator'    => {'name' => move.creator.name}
         }
       end
     end

@@ -30,13 +30,6 @@ describe Toy::Cloneable do
       user.clone.skills.should_not equal(user.skills)
     end
 
-    it "regenerates id" do
-      user.clone.tap do |clone|
-        clone.id.should_not be_nil
-        clone.id.should_not == user.id
-      end
-    end
-
     it "nullifies defined instance variables" do
       user.instance_variable_set("@foo", true)
       user.clone.tap do |clone|

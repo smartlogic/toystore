@@ -24,44 +24,4 @@ describe Toy::Object do
       User.new.persisted?.should be_false
     end
   end
-
-  describe "#to_key" do
-    it "returns [id] if persisted" do
-      user = User.new
-      user.stub(:persisted?).and_return(true)
-      user.to_key.should == [user.id]
-    end
-
-    it "returns nil if not persisted" do
-      User.new.to_key.should be_nil
-    end
-
-    context "with native uuid" do
-      before do
-        User.key :native_uuid
-      end
-
-      it "returns array with guid if persisted" do
-        user = User.new
-        user.stub(:persisted?).and_return(true)
-        user.to_key.should == [user.id.to_guid]
-      end
-
-      it "returns nil if not persisted" do
-        User.new.to_key.should be_nil
-      end
-    end
-  end
-
-  describe "#to_param" do
-    it "returns key joined by - if to_key present" do
-      user = User.new
-      user.stub(:persisted?).and_return(true)
-      user.to_param.should == user.to_key.join('-')
-    end
-
-    it "returns nil if to_key nil" do
-      User.new.to_param.should be_nil
-    end
-  end
 end

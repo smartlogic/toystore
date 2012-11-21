@@ -3,15 +3,9 @@ require 'helper'
 describe Toy::Attributes do
   uses_objects('User', 'Game')
 
-  describe "including" do
-    it "adds id attribute" do
-      User.attributes.keys.should == ['id']
-    end
-  end
-
   describe ".attributes" do
-    it "defaults to hash with id" do
-      User.attributes.keys.should == ['id']
+    it "defaults to empty hash" do
+      User.attributes.should eq({})
     end
   end
 
@@ -70,17 +64,6 @@ describe Toy::Attributes do
       User.attribute :age,  Integer
     end
 
-    it "writes id" do
-      id = User.new.id
-      id.should_not be_nil
-      id.size.should == 36
-    end
-
-    it "does not attempt to set id if already set" do
-      user = User.new(:id => 'frank')
-      user.id.should == 'frank'
-    end
-
     it "sets attributes" do
       instance = User.new(:name => 'John', :age => 28)
       instance.name.should == 'John'
@@ -98,9 +81,9 @@ describe Toy::Attributes do
   end
 
   describe "#attributes" do
-    it "defaults to hash with id" do
-      attrs = ToyStore().new.attributes
-      attrs.keys.should == ['id']
+    it "defaults to empty hash" do
+      attrs = ToyObject().new.attributes
+      attrs.should eq({})
     end
 
     it "includes all attributes that are not nil" do
@@ -108,7 +91,6 @@ describe Toy::Attributes do
       User.attribute(:active, Boolean, :default => true)
       user = User.new
       user.attributes.should == {
-        'id'     => user.id,
         'active' => true,
       }
     end

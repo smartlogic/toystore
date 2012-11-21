@@ -3,6 +3,7 @@ module Toy
     extend ActiveSupport::Concern
 
     include Toy::Object
+    include Identity
     include Persistence
     include MassAssignmentSecurity
     include DirtyStore

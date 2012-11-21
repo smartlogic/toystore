@@ -36,10 +36,6 @@ describe 'Toy Inheritance' do
     it "sets type to class name" do
       Child.new.type.should eq('Child')
     end
-
-    it "sets the key factory to same as parent" do
-      Child.key_factory.should eq(Parent.key_factory)
-    end
   end
 
   describe 'using Toy::Store' do
@@ -88,6 +84,10 @@ describe 'Toy Inheritance' do
 
     it "sets the adapter to the same as the parent" do
       Child.adapter.should eq(Parent.adapter)
+    end
+
+    it "sets the key factory to same as parent" do
+      Child.key_factory.should eq(Parent.key_factory)
     end
   end
 end
