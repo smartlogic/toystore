@@ -58,7 +58,7 @@ describe Toy::Object do
       end
 
       it "returns array with guid if persisted" do
-        user = User.new(location: 'IN', name: 'John')
+        user = User.new(id: {location: 'IN', name: 'John'})
         user.stub(:persisted?).and_return(true)
         user.to_key.should == ['IN', 'John']
       end
@@ -75,7 +75,7 @@ describe Toy::Object do
 
       it "returns array with guid if persisted" do
         id = SimpleUUID::UUID.new
-        user = User.new(bucket: '2012', track_id: id)
+        user = User.new(id: {bucket: '2012', track_id: id})
         user.stub(:persisted?).and_return(true)
         user.to_key.should == ['2012', id.to_guid]
       end
