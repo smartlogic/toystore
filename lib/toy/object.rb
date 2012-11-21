@@ -1,6 +1,6 @@
 module Toy
   module Object
-    extend ActiveSupport::Concern
+    extend  ActiveSupport::Concern
     extend  ActiveModel::Naming
     include ActiveModel::Conversion
     include ActiveModel::Validations
