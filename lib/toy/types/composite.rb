@@ -60,6 +60,16 @@ module Toy
         @attributes.keys.any? { |key| @source[key].blank? }
       end
 
+      # Public
+      def keys
+        @attributes.keys
+      end
+
+      # Public
+      def values
+        @attributes.keys.map { |key| self[key] }
+      end
+
       # Public: Converts composite for storage.
       def to_store(composite, *)
         hash = {}

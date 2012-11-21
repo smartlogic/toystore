@@ -285,4 +285,33 @@ describe Toy::Types::Composite do
       composite[:age].should eq(30)
     end
   end
+
+  describe "#keys" do
+    it "returns array of keys from attributes" do
+      subject.keys.should eq([:name, :age])
+    end
+  end
+
+  describe "#values" do
+    context "with nil values" do
+      it "returns array of values" do
+        subject.values.should eq([nil, nil])
+      end
+    end
+
+    context "with some present values and some nil values" do
+      it "returns array of values" do
+        source[:name] = 'John'
+        subject.values.should eq(['John', nil])
+      end
+    end
+
+    context "with present values" do
+      it "returns array of values" do
+        source[:name] = 'John'
+        source[:age] = 30
+        subject.values.should eq(['John', 30])
+      end
+    end
+  end
 end
