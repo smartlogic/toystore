@@ -29,6 +29,7 @@ RSpec.configure do |c|
   c.include(Support::Objects)
   c.include(IdentityMapMatcher)
 
+  c.fail_fast = true
   c.filter_run :focused => true
   c.alias_example_to :fit, :focused => true
   c.alias_example_to :xit, :pending => true
