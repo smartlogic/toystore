@@ -52,9 +52,9 @@ describe Toy::Object do
       end
     end
 
-    context "with hash" do
+    context "with composite" do
       before do
-        User.key :hash, attributes: {location: String, name: String}
+        User.key :composite, attributes: {location: String, name: String}
       end
 
       it "returns array with guid if persisted" do
@@ -68,9 +68,9 @@ describe Toy::Object do
       end
     end
 
-    context "with hash with uuid type" do
+    context "with composite with uuid type" do
       before do
-        User.key :hash, attributes: {bucket: String, track_id: SimpleUUID::UUID}
+        User.key :composite, attributes: {bucket: String, track_id: SimpleUUID::UUID}
       end
 
       it "returns array with guid if persisted" do

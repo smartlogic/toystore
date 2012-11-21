@@ -12,8 +12,8 @@ module Toy
           UUIDKeyFactory.new
         elsif name_or_factory == :native_uuid
           NativeUUIDKeyFactory.new
-        elsif name_or_factory == :hash
-          HashKeyFactory.new(options.merge(:model => self))
+        elsif name_or_factory == :composite
+          CompositeKeyFactory.new(options.merge(:model => self))
         else
           if name_or_factory.respond_to?(:next_key) && name_or_factory.respond_to?(:key_type)
             name_or_factory

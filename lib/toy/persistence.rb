@@ -98,7 +98,9 @@ module Toy
     end
 
     def persist
-      adapter.write(id, persisted_attributes)
+      attribute = self.class.attributes['id']
+      persisted_id = attribute.to_store(id)
+      adapter.write(persisted_id, persisted_attributes)
     end
   end
 end
