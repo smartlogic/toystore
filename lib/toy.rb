@@ -70,14 +70,12 @@ module Toy
 
   module Types
     autoload 'JSON',                  'toy/types/json'
-    autoload 'Composite',             'toy/types/composite'
   end
 
   module Identity
     autoload 'AbstractKeyFactory',    'toy/identity/abstract_key_factory'
     autoload 'UUIDKeyFactory',        'toy/identity/uuid_key_factory'
     autoload 'NativeUUIDKeyFactory',  'toy/identity/native_uuid_key_factory'
-    autoload 'CompositeKeyFactory',   'toy/identity/composite_key_factory'
   end
 end
 
