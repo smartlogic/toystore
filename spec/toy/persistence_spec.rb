@@ -1,7 +1,7 @@
 require 'helper'
 
 describe Toy::Persistence do
-  uses_constants('User')
+  uses_constants('User', 'Game')
 
   let(:klass) do
     Class.new { include Toy::Store }
@@ -39,6 +39,37 @@ describe Toy::Persistence do
       klass.adapter
       klass.adapter :memory, hash
       klass.adapter.client.should equal(hash)
+    end
+  end
+
+  describe ".persisted_attributes" do
+    before do
+      @name = User.attribute(:name, String)
+      @password = User.attribute(:password, String, :virtual => true)
+    end
+
+    it "includes attributes that are not virtual" do
+      User.persisted_attributes.should include(@name)
+    end
+
+    it "excludes attributes that are virtual" do
+      User.persisted_attributes.should_not include(@password)
+    end
+
+    it "memoizes after first call" do
+      User.should_receive(:attributes).once.and_return({
+        'name' => @name,
+        'password' => @password,
+      })
+      User.persisted_attributes
+      User.persisted_attributes
+      User.persisted_attributes
+    end
+
+    it "is unmemoized when declaring a new attribute" do
+      User.persisted_attributes
+      age = User.attribute :age, Integer
+      User.persisted_attributes.map(&:name).sort.should eq(%w[age name])
     end
   end
 
@@ -368,6 +399,48 @@ describe Toy::Persistence do
       typecast_for_store_value = '1'
       user = User.new(:id => raw_value)
       user.persisted_id.should eq(typecast_for_store_value)
+    end
+  end
+
+  describe "#persisted_attributes" do
+    before do
+      @over    = Game.attribute(:over, Boolean)
+      @score   = Game.attribute(:creator_score, Integer, :virtual => true)
+      @abbr    = Game.attribute(:super_secret_hash, String, :abbr => :ssh)
+      @rewards = Game.attribute(:rewards, Set)
+      @time    = Game.attribute(:time, Time)
+      @game    = Game.new({
+        :over          => true,
+        :creator_score => 20,
+        :rewards       => %w(twigs berries).to_set,
+        :ssh           => 'h4x',
+        :time          => nil,
+      })
+    end
+
+    it "includes persisted attributes" do
+      @game.persisted_attributes.should have_key('over')
+    end
+
+    it "includes abbreviated names for abbreviated attributes" do
+      @game.persisted_attributes.should have_key('ssh')
+    end
+
+    it "does not include full names for abbreviated attributes" do
+      @game.persisted_attributes.should_not have_key('super_secret_hash')
+    end
+
+    it "does not include virtual attributes" do
+      @game.persisted_attributes.should_not have_key(:creator_score)
+    end
+
+    it "includes to_store values for attributes" do
+      @game.persisted_attributes['rewards'].should be_instance_of(Array)
+      @game.persisted_attributes['rewards'].should == @rewards.to_store(@game.rewards)
+    end
+
+    it "does not include nil attributes" do
+      @game.persisted_attributes.should_not have_key('time')
     end
   end
 

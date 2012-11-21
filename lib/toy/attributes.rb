@@ -25,12 +25,8 @@ module Toy
         @defaulted_attributes ||= attributes.values.select(&:default?)
       end
 
-      def persisted_attributes
-        @persisted_attributes ||= attributes.values.select(&:persisted?)
-      end
-
       def attribute(key, type, options = {})
-        @defaulted_attributes = @persisted_attributes = nil
+        @defaulted_attributes = nil
         attribute = Attribute.new(self, key, type, options)
         define_attribute_methods [attribute.name]
         attribute
@@ -53,16 +49,6 @@ module Toy
 
     def attributes
       @attributes
-    end
-
-    def persisted_attributes
-      attributes = {}
-      self.class.persisted_attributes.each do |attribute|
-        if (value = attribute.to_store(read_attribute(attribute.name)))
-          attributes[attribute.persisted_name] = value
-        end
-      end
-      attributes
     end
 
     def attributes=(attrs, *)

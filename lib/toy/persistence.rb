@@ -30,6 +30,15 @@ module Toy
       def destroy(*ids)
         ids.each { |id| get(id).try(:destroy) }
       end
+
+      def persisted_attributes
+        @persisted_attributes ||= attributes.values.select(&:persisted?)
+      end
+
+      def attribute(*args)
+        @persisted_attributes = nil
+        super
+      end
     end
 
     def adapter
@@ -90,6 +99,17 @@ module Toy
       attribute = attribute_instance(attribute_name)
       attribute_value = read_attribute(attribute_name)
       attribute.to_store(attribute_value)
+    end
+
+    # Public: Choke point for overriding what attributes get stored.
+    def persisted_attributes
+      attributes = {}
+      self.class.persisted_attributes.each do |attribute|
+        if (value = attribute.to_store(read_attribute(attribute.name)))
+          attributes[attribute.persisted_name] = value
+        end
+      end
+      attributes
     end
 
     # Public: Choke point for overriding how data gets written.
