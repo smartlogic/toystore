@@ -20,6 +20,6 @@ user = User.create({
   :my_really_long_field_name => 'something',
 })
 
-pp Marshal.load(User.adapter.client[user.id])
+pp User.adapter.client[user.id]
 # Abbreviated attributes are stored in the database as the abbreviation for when you want to conserve space. The abbreviation and the full attribute name work exactly the same in Ruby, the only difference is how they get persisted.
 # {"my"=>"something", "email"=>"nunemaker@gmail.com"}

@@ -18,8 +18,8 @@ end
 user = User.create(:name => 'John')
 
 pp user
-pp User.get(user.id)
+pp User.read(user.id)
 
 user.destroy
 
-pp User.get(user.id)
+pp User.read(user.id)

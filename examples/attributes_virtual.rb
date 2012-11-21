@@ -35,6 +35,6 @@ user = User.create({
   :password_confirmation => 'testing',
 })
 
-pp Marshal.load(User.adapter.client[user.id])
+pp User.adapter.client[user.id]
 # Virtual attributes are never persisted. In the data store, only email and crypted_password are stored.
 # {"crypted_password"=>"testing", "email"=>"nunemaker@gmail.com"}

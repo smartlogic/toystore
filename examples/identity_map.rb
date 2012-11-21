@@ -28,12 +28,12 @@ user = User.create(:name => 'John')
 #   {"name"=>"John"}
 # ToyStore IMS User "08a1c54c-3393-11e0-8b37-89da41d2f675"
 
-puts "With identity map - User.get(user.id).equal?(user): #{User.get(user.id).equal?(user)}"
+puts "With identity map - User.read(user.id).equal?(user): #{User.read(user.id).equal?(user)}"
 # User is retrieved from identity map instead of querying
 # ToyStore IMG User "08a1c54c-3393-11e0-8b37-89da41d2f675"
 
 Toy::IdentityMap.without do
-  puts "Without identity map - User.get(user.id).equal?(user): #{User.get(user.id).equal?(user)}"
+  puts "Without identity map - User.read(user.id).equal?(user): #{User.read(user.id).equal?(user)}"
   # User is queried from database
   # ToyStore GET User :memory "08a1c54c-3393-11e0-8b37-89da41d2f675"
   #   {"name"=>"John"}

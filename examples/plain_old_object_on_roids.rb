@@ -33,13 +33,12 @@ person = Person.new(:name => 'Hacker', :age => 13, :role => 'admin')
 pp person.role # "guest"
 
 # Querying
-pp Person.get(john.id)
-pp Person.get_multiple([john.id])
-pp Person.get('NOT HERE') # nil
-pp Person.get_or_new('NOT HERE') # new person with id of 'NOT HERE'
+pp Person.read(john.id)
+pp Person.read_multiple([john.id])
+pp Person.read('NOT HERE') # nil
 
 begin
-  Person.get!('NOT HERE')
+  Person.read!('NOT HERE')
 rescue Toy::NotFound
   puts "Could not find person with id of 'NOT HERE'"
 end
@@ -49,13 +48,11 @@ pp john.reload
 
 # Callbacks
 class Person
+  before_create :add_fifty_to_age
+
   def add_fifty_to_age
     self.age += 50
   end
-end
-
-class Person
-  before_create :add_fifty_to_age
 end
 
 pp Person.create(:age => 10).age # 60
@@ -100,16 +97,16 @@ pp john.reload.mom_id == mom.id # true
 Toy::IdentityMap.use do
   frank = Person.create(:name => 'Frank')
 
-  pp Person.get(frank.id).equal?(frank)                # true
-  pp Person.get(frank.id).object_id == frank.object_id # true
+  pp Person.read(frank.id).equal?(frank)                # true
+  pp Person.read(frank.id).object_id == frank.object_id # true
 end
 
 # Or you can turn it on globally
 Toy::IdentityMap.enabled = true
 frank = Person.create(:name => 'Frank')
 
-pp Person.get(frank.id).equal?(frank)                # true
-pp Person.get(frank.id).object_id == frank.object_id # true
+pp Person.read(frank.id).equal?(frank)                # true
+pp Person.read(frank.id).object_id == frank.object_id # true
 
 # All persistence runs through an adapter.
 # All of the above examples used the default in-memory adapter.
@@ -119,25 +116,19 @@ Person.adapter :memory, {}
 puts "Adapter: #{Person.adapter.inspect}"
 
 # You can make a new adapter to your awesome new/old data store
-# Always use #key_for, #encode, and #decode. Feel free to override
-# them if you like, but always use them. Default encode/decode is
-# most likely marshaling, but you can use anything.
 Adapter.define(:append_only_array) do
   def read(key)
-    if (record = client.reverse.detect { |row| row[0] == key_for(key) })
-      decode(record)
+    if (record = client.reverse.detect { |row| row[0] == key })
+      record
     end
   end
 
   def write(key, value)
-    key   = key_for(key)
-    value = encode(value)
     client << [key, value]
     value
   end
 
   def delete(key)
-    key = key_for(key)
     client.delete_if { |row| row[0] == key }
   end
 
@@ -157,4 +148,4 @@ person.save
 
 pp client
 
-pp Person.get(person.id) # Phil with age 56
+pp Person.read(person.id) # Phil with age 56

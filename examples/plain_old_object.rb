@@ -46,8 +46,8 @@ pp john.clone
 class AwesomePerson < Person
 end
 
-pp Person.attributes.keys.sort          # ["age", "id", "name"]
-pp AwesomePerson.attributes.keys.sort   # ["age", "id", "name", "type"]
+pp Person.attributes.keys.sort          # ["age", "name"]
+pp AwesomePerson.attributes.keys.sort   # ["age", "name", "type"]
 
 # Serialization
 puts john.to_json

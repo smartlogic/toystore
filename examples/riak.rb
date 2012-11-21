@@ -18,8 +18,8 @@ end
 list = GameList.create(:source => {'foo' => 'bar'})
 
 pp list
-pp GameList.get(list.id)
+pp GameList.read(list.id)
 
 list.destroy
 
-pp GameList.get(list.id)
+pp GameList.read(list.id)

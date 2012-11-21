@@ -8,7 +8,7 @@ The project comes with two main includes that you can use -- Toy::Object and Toy
 
 **Toy::Object** comes with all the goods you need for plain old ruby objects -- attributes, dirty attribute tracking, equality, inheritance, serialization, cloning, logging and pretty inspecting.
 
-**Toy::Store** includes Toy::Object and adds persistence through adapters, mass assignment, querying, callbacks, validations and a few simple associations (lists and references).
+**Toy::Store** includes Toy::Object and adds identity, persistence and querying through adapters, mass assignment, callbacks, validations and a few simple associations (lists and references).
 
 ### Toy::Object
 
@@ -23,34 +23,34 @@ class Person
 end
 
 # Pretty class inspecting
-puts Person.inspect
+pp Person
 
-john = Person.new(:name => 'John', :age => 30)
+john  = Person.new(:name => 'John',  :age => 30)
 steve = Person.new(:name => 'Steve', :age => 31)
 
 # Pretty inspecting
-puts john.inspect
+pp john
 
 # Attribute dirty tracking
 john.name = 'NEW NAME!'
-puts john.changes.inspect       # {"name"=>["John", "NEW NAME!"], "age"=>[nil, 30]}
-puts john.name_changed?.inspect # true
+pp john.changes       # {"name"=>["John", "NEW NAME!"], "age"=>[nil, 30]}
+pp john.name_changed? # true
 
 # Equality goodies
-puts john.eql?(john)  # true
-puts john.eql?(steve) # false
-puts john == john     # true
-puts john == steve    # false
+pp john.eql?(john)  # true
+pp john.eql?(steve) # false
+pp john == john     # true
+pp john == steve    # false
 
 # Cloning
-puts john.clone.inspect
+pp john.clone
 
 # Inheritance
 class AwesomePerson < Person
 end
 
-puts Person.attributes.keys.sort.inspect          # ["age", "id", "name"]
-puts AwesomePerson.attributes.keys.sort.inspect   # ["age", "id", "name", "type"]
+pp Person.attributes.keys.sort          # ["age", "name"]
+pp AwesomePerson.attributes.keys.sort   # ["age", "name", "type"]
 
 # Serialization
 puts john.to_json
@@ -84,13 +84,12 @@ person = Person.new(:name => 'Hacker', :age => 13, :role => 'admin')
 pp person.role # "guest"
 
 # Querying
-pp Person.get(john.id)
-pp Person.get_multiple([john.id])
-pp Person.get('NOT HERE') # nil
-pp Person.get_or_new('NOT HERE') # new person with id of 'NOT HERE'
+pp Person.read(john.id)
+pp Person.read_multiple([john.id])
+pp Person.read('NOT HERE') # nil
 
 begin
-  Person.get!('NOT HERE')
+  Person.read!('NOT HERE')
 rescue Toy::NotFound
   puts "Could not find person with id of 'NOT HERE'"
 end
@@ -100,13 +99,11 @@ pp john.reload
 
 # Callbacks
 class Person
+  before_create :add_fifty_to_age
+
   def add_fifty_to_age
     self.age += 50
   end
-end
-
-class Person
-  before_create :add_fifty_to_age
 end
 
 pp Person.create(:age => 10).age # 60
@@ -151,16 +148,16 @@ pp john.reload.mom_id == mom.id # true
 Toy::IdentityMap.use do
   frank = Person.create(:name => 'Frank')
 
-  pp Person.get(frank.id).equal?(frank)                # true
-  pp Person.get(frank.id).object_id == frank.object_id # true
+  pp Person.read(frank.id).equal?(frank)                # true
+  pp Person.read(frank.id).object_id == frank.object_id # true
 end
 
 # Or you can turn it on globally
 Toy::IdentityMap.enabled = true
 frank = Person.create(:name => 'Frank')
 
-pp Person.get(frank.id).equal?(frank)                # true
-pp Person.get(frank.id).object_id == frank.object_id # true
+pp Person.read(frank.id).equal?(frank)                # true
+pp Person.read(frank.id).object_id == frank.object_id # true
 
 # All persistence runs through an adapter.
 # All of the above examples used the default in-memory adapter.
@@ -170,25 +167,19 @@ Person.adapter :memory, {}
 puts "Adapter: #{Person.adapter.inspect}"
 
 # You can make a new adapter to your awesome new/old data store
-# Always use #key_for, #encode, and #decode. Feel free to override
-# them if you like, but always use them. Default encode/decode is
-# most likely marshaling, but you can use anything.
 Adapter.define(:append_only_array) do
   def read(key)
-    if (record = client.reverse.detect { |row| row[0] == key_for(key) })
-      decode(record)
+    if (record = client.reverse.detect { |row| row[0] == key })
+      record
     end
   end
 
   def write(key, value)
-    key   = key_for(key)
-    value = encode(value)
     client << [key, value]
     value
   end
 
   def delete(key)
-    key = key_for(key)
     client.delete_if { |row| row[0] == key }
   end
 
@@ -208,7 +199,7 @@ person.save
 
 pp client
 
-pp Person.get(person.id) # Phil with age 56
+pp Person.read(person.id) # Phil with age 56
 ```
 
 If that doesn't excite you, nothing will. At this point, you are probably wishing for more.
