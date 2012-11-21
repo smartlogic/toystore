@@ -3,23 +3,23 @@ module Toy
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def get(id, options = nil)
+      def read(id, options = nil)
         if (attrs = adapter.read(id, options))
           load(id, attrs)
         end
       end
 
-      alias_method :read, :get
-      alias_method :find, :get
+      alias_method :get, :read
+      alias_method :find, :read
 
-      def get!(id, options = nil)
+      def read!(id, options = nil)
         get(id, options) || raise(Toy::NotFound.new(id))
       end
 
-      alias_method :read!, :get!
-      alias_method :find!, :get!
+      alias_method :get!, :read!
+      alias_method :find!, :read!
 
-      def get_multiple(ids, options = nil)
+      def read_multiple(ids, options = nil)
         result = adapter.read_multiple(ids, options)
         result.each do |id, attrs|
           result[id] = attrs.nil? ? nil : load(id, attrs)
@@ -27,8 +27,8 @@ module Toy
         result
       end
 
-      alias_method :read_multiple, :get_multiple
-      alias_method :find_multiple, :get_multiple
+      alias_method :get_multiple, :read_multiple
+      alias_method :find_multiple, :read_multiple
 
       def get_or_new(id)
         get(id) || new(:id => id)
