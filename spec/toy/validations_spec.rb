@@ -141,4 +141,17 @@ describe Toy::Validations do
       end
     end
   end
+
+  context "validating presence of uuid attribute" do
+    before do
+      User.attribute :app_id, SimpleUUID::UUID
+      User.validates_presence_of :app_id
+    end
+
+    it "is invalid if nil" do
+      user = User.new(app_id: nil)
+      user.should_not be_valid
+      user.errors[:app_id].should include("can't be blank")
+    end
+  end
 end

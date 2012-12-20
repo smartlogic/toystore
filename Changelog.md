@@ -2,6 +2,10 @@
 
 I will do my best to keep this up to date with significant changes here, starting in 0.8.3.
 
+## master
+
+* No longer defaulting uuid to new instance, use :default instead. This allows for nil values for attributes of uuid type.
+
 ## 0.14.0
 
 * No longer persisting nil attributes

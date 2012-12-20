@@ -1,14 +1,11 @@
 require 'helper'
 
 describe SimpleUUID::UUID do
-  describe ".store_default" do
-    it "returns new instance of simple uuid" do
-      value = described_class.store_default
-      value.should be_instance_of(described_class)
-    end
-  end
-
   describe ".to_store" do
+    it "returns nil if value is already nil" do
+      described_class.to_store(nil).should be(nil)
+    end
+
     it "returns value if value is already uuid" do
       uuid = described_class.new
       described_class.to_store(uuid).should be(uuid)
@@ -23,6 +20,10 @@ describe SimpleUUID::UUID do
   end
 
   describe ".from_store" do
+    it "returns nil if value is already nil" do
+      described_class.from_store(nil).should be(nil)
+    end
+
     it "returns value if value is already uuid" do
       uuid = described_class.new
       described_class.from_store(uuid).should be(uuid)
