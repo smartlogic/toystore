@@ -10,10 +10,15 @@ describe Toy::Reloadable do
     end
     let(:user) { @user }
 
-    it "reloads id from database" do
-      id = user.id
+    it "uses persisted id to read from adapter" do
+      User.class_eval do
+        def persisted_id
+          'foo'
+        end
+      end
+      User.adapter.should_receive(:read).with('foo').and_return({})
       user.reload
-      user.id.should == id
+      user.id.should == 'foo'
     end
 
     it "reloads record from the database" do
