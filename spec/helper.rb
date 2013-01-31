@@ -19,6 +19,7 @@ require 'support/objects'
 require 'support/identity_map_matcher'
 require 'support/name_and_number_key_factory'
 require 'support/shared_active_model_lint'
+require 'support/instrumenter_helpers'
 
 Toy.logger = Logger.new(log_path.join('test.log'))
 
@@ -26,6 +27,7 @@ RSpec.configure do |c|
   c.include(Support::Constants)
   c.include(Support::Objects)
   c.include(IdentityMapMatcher)
+  c.include(InstrumenterHelpers)
 
   c.fail_fast = true
   c.filter_run :focused => true
@@ -36,5 +38,6 @@ RSpec.configure do |c|
   c.before(:each) do
     Toy::IdentityMap.enabled = false
     Toy.key_factory = nil
+    clear_instrumenter
   end
 end
