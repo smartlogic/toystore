@@ -1,14 +1,9 @@
-require 'securerandom'
-require 'active_support/notifications'
+require 'toy/instrumentation/active_support_notifications'
 require 'active_support/log_subscriber'
 
 module Toy
   module Instrumentation
     class LogSubscriber < ::ActiveSupport::LogSubscriber
-      SaveAction   = 'save'
-      CreateAction = 'create'
-      UpdateAction = 'update'
-
       def read(event)
         return unless logger.debug?
         log_event :read, event
