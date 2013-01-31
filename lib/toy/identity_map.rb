@@ -62,11 +62,11 @@ module Toy
       end
     end
 
-    def save(*)
+    def save(options={})
       super.tap { |result| add_to_identity_map if result }
     end
 
-    def delete(*)
+    def delete
       super.tap { remove_from_identity_map }
     end
 

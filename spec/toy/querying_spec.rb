@@ -8,13 +8,53 @@ describe Toy::Querying do
   end
 
   shared_examples_for "adapter read and load instance" do |method_name|
-    it "returns document if found" do
-      john = User.create(:name => 'John')
-      User.send(method_name, john.id).name.should == 'John'
+    context "when document found" do
+      before do
+        setup_memory_instrumenter
+
+        @user = User.create(:name => 'John')
+        @result = User.send(method_name, @user.id, {some: 'thing'})
+      end
+
+      it "returns document" do
+        @result.should eq(@user)
+      end
+
+      it "is instrumented and sets payload hit to true" do
+        event = instrumenter.events.last
+        event.should_not be_nil
+        event.name.should eq('read.toystore')
+        event.payload.should eq({
+          :id      => @user.id,
+          :options => {some: 'thing'},
+          :model   => User,
+          :hit     => true,
+        })
+      end
     end
 
-    it "returns nil if not found" do
-      User.send(method_name, '1').should be_nil
+    context "when document not found" do
+      before do
+        setup_memory_instrumenter
+
+        @id = 'blah'
+        @result = User.send(method_name, @id, {some: 'thing'})
+      end
+
+      it "returns nil" do
+        @result.should be_nil
+      end
+
+      it "is instrumented and sets payload :hit to false" do
+        event = instrumenter.events.last
+        event.should_not be_nil
+        event.payload.should eq({
+          :id      => @id,
+          :options => {some: 'thing'},
+          :model   => User,
+          :hit     => false,
+        })
+      end
     end
 
     it "passes options to adapter read" do
@@ -54,6 +94,36 @@ describe Toy::Querying do
       }
     end
 
+    it "is instrumented" do
+      setup_memory_instrumenter
+
+      john  = User.create(:name => 'John')
+      steve = User.create(:name => 'Steve')
+
+      ids = [
+        john.id,
+        steve.id,
+        'foo',
+      ]
+
+      User.send(method_name, ids, some: 'thing').should == {
+        john.id  => john,
+        steve.id => steve,
+        'foo'    => nil,
+      }
+
+      event = instrumenter.events.last
+      event.should_not be_nil
+      event.name.should eq('read_multiple.toystore')
+      event.payload.should eq({
+        :ids     => ids,
+        :options => {some: 'thing'},
+        :model   => User,
+        :hits    => 2,
+        :misses  => 1,
+      })
+    end
+
     it "passes options to adapter read_multiple" do
       john = User.create(:name => 'John')
       User.adapter.should_receive(:read_multiple).with([john.id], my: 'options').and_return({john.id => {'name' => 'John'}})
@@ -62,13 +132,54 @@ describe Toy::Querying do
   end
 
   shared_examples_for "adapter key?" do |method_name|
-    it "returns true if key exists" do
-      user = User.create(:name => 'John')
-      User.send(method_name, user.id).should be_true
+    context "when found" do
+      before do
+        setup_memory_instrumenter
+
+        @user = User.create(:name => 'John')
+        @result = User.send(method_name, @user.id, {some: 'thing'})
+      end
+
+      it "returns true" do
+        @result.should be_true
+      end
+
+      it "is instrumented and sets hit to true" do
+        event = instrumenter.events.last
+        event.should_not be_nil
+        event.name.should eq('key.toystore')
+        event.payload.should eq({
+          :id      => @user.id,
+          :options => {some: 'thing'},
+          :model   => User,
+          :hit     => true,
+        })
+      end
     end
 
-    it "returns false if key does not exist" do
-      User.send(method_name, 'taco:bell:tacos').should be_false
+    context "when not found" do
+      before do
+        setup_memory_instrumenter
+
+        @id = 'taco:bell:tacos'
+        @result = User.send(method_name, @id, {some: 'thing'})
+      end
+
+      it "returns false" do
+        @result.should be_false
+      end
+
+      it "is instrumented and sets hit to false" do
+        event = instrumenter.events.last
+        event.should_not be_nil
+        event.name.should eq('key.toystore')
+        event.payload.should eq({
+          :id      => @id,
+          :options => {some: 'thing'},
+          :model   => User,
+          :hit     => false,
+        })
+      end
     end
   end
 
@@ -106,32 +217,6 @@ describe Toy::Querying do
 
   describe ".find_multiple" do
     include_examples "adapter read_multiple and load instances", :find_multiple
-  end
-
-  describe ".get_or_new" do
-    it "returns found" do
-      user = User.create
-      User.get_or_new(user.id).should == user
-    end
-
-    it "creates new with id set if not found" do
-      user = User.get_or_new('foo')
-      user.should be_instance_of(User)
-      user.id.should == 'foo'
-    end
-  end
-
-  describe ".get_or_create" do
-    it "returns found" do
-      user = User.create
-      User.get_or_create(user.id).should == user
-    end
-
-    it "creates new with id set if not found" do
-      user = User.get_or_create('foo')
-      user.should be_instance_of(User)
-      user.id.should == 'foo'
-    end
   end
 
   describe ".key?" do

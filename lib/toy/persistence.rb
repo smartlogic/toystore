@@ -75,8 +75,18 @@ module Toy
       !new_record? && !destroyed?
     end
 
-    def save(*)
-      new_record? ? create : update
+    def save(options={})
+      default_payload = {
+        :id => persisted_id,
+        :model => self.class,
+      }
+
+      new_record = new_record?
+      action = new_record ? 'create' : 'update'
+
+      Toy.instrumenter.instrument("#{action}.toystore", default_payload) { |payload|
+        new_record ? create : update
+      }
     end
 
     def update_attributes(attrs)
@@ -85,7 +95,14 @@ module Toy
     end
 
     def destroy
-      delete
+      default_payload = {
+        :id => persisted_id,
+        :model => self.class,
+      }
+
+      Toy.instrumenter.instrument('destroy.toystore', default_payload) { |payload|
+        delete
+      }
     end
 
     def delete
@@ -112,7 +129,8 @@ module Toy
       attributes
     end
 
-    # Public: Choke point for overriding how data gets written.
+    # Public: Choke point for overriding how data gets written. Don't call this
+    # directory, but you can safely override it.
     def persist
       adapter.write(persisted_id, persisted_attributes)
     end

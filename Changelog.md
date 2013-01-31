@@ -4,10 +4,12 @@ I will do my best to keep this up to date with significant changes here, startin
 
 ## master
 
+* Added instrumentation and log subscriber
+* Removed Toy.logger, Toy.logger? and Toy.logger=. All logging is now through log_subscriber. See the README.
+
+## 0.13.1
+
 * No longer defaulting uuid to new instance, use :default instead. This allows for nil values for attributes of uuid type.
-
-## 0.14.0
-
 * No longer persisting nil attributes
 * Added Toy::Types::JSON for storing serialized JSON as an attribute value
 * Added #persisted_id and made it public so people can override confidently. It is now used in adapter.write and adapter.delete.

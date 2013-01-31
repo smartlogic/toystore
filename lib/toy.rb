@@ -14,20 +14,10 @@ require 'active_support/core_ext'
 extensions_path = root_path.join('lib', 'toy', 'extensions')
 Dir[extensions_path + '**/*.rb'].each { |file| require(file) }
 
+require 'toy/instrumenters/noop'
+
 module Toy
   extend self
-
-  def logger
-    @logger
-  end
-
-  def logger?
-    @logger.present?
-  end
-
-  def logger=(logger)
-    @logger = logger
-  end
 
   def key_factory=(key_factory)
     @key_factory = key_factory
@@ -35,6 +25,14 @@ module Toy
 
   def key_factory
     @key_factory ||= Toy::Identity::UUIDKeyFactory.new
+  end
+
+  def instrumenter
+    @instrumenter || Toy::Instrumenters::Noop
+  end
+
+  def instrumenter=(instrumenter)
+    @instrumenter = instrumenter
   end
 
   module Middleware
@@ -52,7 +50,6 @@ module Toy
   autoload 'Equality',                'toy/equality'
   autoload 'Inspect',                 'toy/inspect'
   autoload 'Inheritance',             'toy/inheritance'
-  autoload 'Logger',                  'toy/logger'
   autoload 'MassAssignmentSecurity',  'toy/mass_assignment_security'
   autoload 'Persistence',             'toy/persistence'
   autoload 'Querying',                'toy/querying'
