@@ -27,6 +27,7 @@ describe Toy::Querying do
         event.payload.should eq({
           :id      => @user.id,
           :options => {some: 'thing'},
+          :model   => User,
           :hit     => true,
         })
       end
@@ -50,6 +51,7 @@ describe Toy::Querying do
         event.payload.should eq({
           :id      => @id,
           :options => {some: 'thing'},
+          :model   => User,
           :hit     => false,
         })
       end
@@ -116,6 +118,7 @@ describe Toy::Querying do
       event.payload.should eq({
         :ids     => ids,
         :options => {some: 'thing'},
+        :model   => User,
         :hits    => 2,
         :misses  => 1,
       })
@@ -148,6 +151,7 @@ describe Toy::Querying do
         event.payload.should eq({
           :id      => @user.id,
           :options => {some: 'thing'},
+          :model   => User,
           :hit     => true,
         })
       end
@@ -172,6 +176,7 @@ describe Toy::Querying do
         event.payload.should eq({
           :id      => @id,
           :options => {some: 'thing'},
+          :model   => User,
           :hit     => false,
         })
       end

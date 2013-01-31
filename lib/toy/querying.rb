@@ -4,11 +4,14 @@ module Toy
 
     module ClassMethods
       def read(id, options = nil)
-        Toy.instrumenter.instrument('read.toystore') { |payload|
-          payload[:id] = id
-          payload[:options] = options
-          payload[:hit] = false # hit if found, miss if not found
+        default_payload = {
+          :id      => id,
+          :options => options,
+          :model   => self,
+          :hit     => false, # default to not found
+        }
 
+        Toy.instrumenter.instrument('read.toystore', default_payload) { |payload|
           if (attrs = adapter.read(id, options))
             payload[:hit] = true
             load(id, attrs)
@@ -30,6 +33,7 @@ module Toy
         default_payload = {
           :ids     => ids,
           :options => options,
+          :model   => self,
           :hits    => 0,
           :misses  => 0,
         }
@@ -56,6 +60,7 @@ module Toy
         default_payload = {
           :id      => id,
           :options => options,
+          :model => self,
         }
 
         Toy.instrumenter.instrument('key.toystore', default_payload) { |payload|

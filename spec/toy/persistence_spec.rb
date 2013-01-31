@@ -257,10 +257,10 @@ describe Toy::Persistence do
         @doc.save
 
         event = instrumenter.events.last
-        event.name.should eq('save.toystore')
+        event.name.should eq('create.toystore')
         event.payload.should eq({
           :id => @doc.persisted_id,
-          :new_record => true,
+          :model => User,
         })
       end
 
@@ -328,10 +328,10 @@ describe Toy::Persistence do
         @doc.save
 
         event = instrumenter.events.last
-        event.name.should eq('save.toystore')
+        event.name.should eq('update.toystore')
         event.payload.should eq({
           :id => @doc.persisted_id,
-          :new_record => false,
+          :model => User,
         })
       end
 
@@ -403,6 +403,7 @@ describe Toy::Persistence do
       event.name.should eq('destroy.toystore')
       event.payload.should eq({
         :id => @doc.id,
+        :model => User,
       })
     end
   end

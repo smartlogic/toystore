@@ -78,16 +78,14 @@ module Toy
     def save(options={})
       default_payload = {
         :id => persisted_id,
+        :model => self.class,
       }
 
-      Toy.instrumenter.instrument('save.toystore', default_payload) { |payload|
-        if new_record?
-          payload[:new_record] = true
-          create
-        else
-          payload[:new_record] = false
-          update
-        end
+      new_record = new_record?
+      action = new_record ? 'create' : 'update'
+
+      Toy.instrumenter.instrument("#{action}.toystore", default_payload) { |payload|
+        new_record ? create : update
       }
     end
 
@@ -99,6 +97,7 @@ module Toy
     def destroy
       default_payload = {
         :id => persisted_id,
+        :model => self.class,
       }
 
       Toy.instrumenter.instrument('destroy.toystore', default_payload) { |payload|
