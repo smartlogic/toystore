@@ -31,4 +31,18 @@ describe Toy do
       Toy.key_factory.should be_instance_of(Toy::Identity::UUIDKeyFactory)
     end
   end
+
+  describe ".instrumenter" do
+    it "defaults to noop" do
+      described_class.instrumenter.should eq(Toy::Instrumenters::Noop)
+    end
+  end
+
+  describe ".instrumenter=" do
+    it "sets instrumenter" do
+      instrumenter = double('Instrumenter')
+      Toy.instrumenter = instrumenter
+      Toy.instrumenter.should be(instrumenter)
+    end
+  end
 end

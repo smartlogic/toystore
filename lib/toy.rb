@@ -14,6 +14,8 @@ require 'active_support/core_ext'
 extensions_path = root_path.join('lib', 'toy', 'extensions')
 Dir[extensions_path + '**/*.rb'].each { |file| require(file) }
 
+require 'toy/instrumenters/noop'
+
 module Toy
   extend self
 
@@ -35,6 +37,14 @@ module Toy
 
   def key_factory
     @key_factory ||= Toy::Identity::UUIDKeyFactory.new
+  end
+
+  def instrumenter
+    @instrumenter || Toy::Instrumenters::Noop
+  end
+
+  def instrumenter=(instrumenter)
+    @instrumenter = instrumenter
   end
 
   module Middleware
