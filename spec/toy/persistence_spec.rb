@@ -251,6 +251,19 @@ describe Toy::Persistence do
         @doc.save.should be_true
       end
 
+      it "is instrumented" do
+        setup_memory_instrumenter
+
+        @doc.save
+
+        event = instrumenter.events.last
+        event.name.should eq('save.toystore')
+        event.payload.should eq({
+          :id => @doc.persisted_id,
+          :new_record => true,
+        })
+      end
+
       context "with #persist overridden" do
         before do
           @doc.class_eval do
@@ -309,6 +322,19 @@ describe Toy::Persistence do
         @doc.save.should be_true
       end
 
+      it "is instrumented" do
+        setup_memory_instrumenter
+
+        @doc.save
+
+        event = instrumenter.events.last
+        event.name.should eq('save.toystore')
+        event.payload.should eq({
+          :id => @doc.persisted_id,
+          :new_record => false,
+        })
+      end
+
       context "with #persist overridden" do
         before do
           @doc.class_eval do
@@ -359,10 +385,25 @@ describe Toy::Persistence do
   end
 
   describe "#destroy" do
+    before do
+      @doc = User.create
+    end
+
     it "should remove the instance" do
-      doc = User.create
-      doc.destroy
-      User.key?(doc.id).should be_false
+      @doc.destroy
+      User.key?(@doc.id).should be_false
+    end
+
+    it "is instrumented" do
+      setup_memory_instrumenter
+
+      @doc.destroy
+
+      event = instrumenter.events.last
+      event.name.should eq('destroy.toystore')
+      event.payload.should eq({
+        :id => @doc.id,
+      })
     end
   end
 
