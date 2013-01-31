@@ -10,7 +10,6 @@ module Toy
     include Dirty
     include Equality
     include Inspect
-    include Logger
     include Inheritance
     include Serialization
 

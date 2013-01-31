@@ -1,12 +1,9 @@
 $:.unshift(File.expand_path('../../lib', __FILE__))
 
 require 'pathname'
-require 'logger'
 
 root_path = Pathname(__FILE__).dirname.join('..').expand_path
 lib_path  = root_path.join('lib')
-log_path  = root_path.join('log')
-log_path.mkpath
 
 require 'rubygems'
 require 'bundler'
@@ -20,8 +17,6 @@ require 'support/identity_map_matcher'
 require 'support/name_and_number_key_factory'
 require 'support/shared_active_model_lint'
 require 'support/instrumenter_helpers'
-
-Toy.logger = Logger.new(log_path.join('test.log'))
 
 RSpec.configure do |c|
   c.include(Support::Constants)

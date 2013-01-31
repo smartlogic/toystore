@@ -19,18 +19,6 @@ require 'toy/instrumenters/noop'
 module Toy
   extend self
 
-  def logger
-    @logger
-  end
-
-  def logger?
-    @logger.present?
-  end
-
-  def logger=(logger)
-    @logger = logger
-  end
-
   def key_factory=(key_factory)
     @key_factory = key_factory
   end
@@ -62,7 +50,6 @@ module Toy
   autoload 'Equality',                'toy/equality'
   autoload 'Inspect',                 'toy/inspect'
   autoload 'Inheritance',             'toy/inheritance'
-  autoload 'Logger',                  'toy/logger'
   autoload 'MassAssignmentSecurity',  'toy/mass_assignment_security'
   autoload 'Persistence',             'toy/persistence'
   autoload 'Querying',                'toy/querying'

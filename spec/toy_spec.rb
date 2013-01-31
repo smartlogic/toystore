@@ -3,22 +3,6 @@ require 'helper'
 describe Toy do
   uses_constants('User', 'Game')
 
-  describe ".logger" do
-    before do
-      @logger = Toy.logger
-    end
-
-    after do
-      Toy.logger = @logger
-    end
-
-    it "should set the default logger" do
-      logger = stub
-      Toy.logger = logger
-      Toy.logger.should == logger
-    end
-  end
-
   describe ".key_factory" do
     it "should set the default key_factory" do
       key_factory = stub
