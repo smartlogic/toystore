@@ -1,24 +1,8 @@
+require 'rack/body_proxy'
+
 module Toy
   module Middleware
     class IdentityMap
-      class Body
-        def initialize(target, original)
-          @target   = target
-          @original = original
-        end
-
-        def each(&block)
-          @target.each(&block)
-        end
-
-        def close
-          @target.close if @target.respond_to?(:close)
-        ensure
-          Toy::IdentityMap.enabled = @original
-          Toy::IdentityMap.clear
-        end
-      end
-
       def initialize(app)
         @app = app
       end
@@ -27,8 +11,13 @@ module Toy
         Toy::IdentityMap.clear
         enabled = Toy::IdentityMap.enabled
         Toy::IdentityMap.enabled = true
-        status, headers, body = @app.call(env)
-        [status, headers, Body.new(body, enabled)]
+
+        response = @app.call(env)
+        response[2] = Rack::BodyProxy.new(response[2]) {
+          Toy::IdentityMap.enabled = enabled
+          Toy::IdentityMap.clear
+        }
+        response
       end
     end
   end
