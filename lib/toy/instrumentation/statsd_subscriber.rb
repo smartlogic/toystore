@@ -3,13 +3,19 @@
 # that lives in the same directory as this file. The benefit is that it
 # subscribes to the correct events and does everything for your.
 require 'toy/instrumentation/subscriber'
-require 'metriks'
+require 'statsd'
 
 module Toy
   module Instrumentation
-    class MetriksSubscriber < Subscriber
+    class StatsdSubscriber < Subscriber
+      class << self
+        attr_accessor :client
+      end
+
       def update_timer(metric)
-        Metriks.timer(metric).update(@duration)
+        if self.class.client
+          self.class.client.timing metric, (@duration * 1_000).round
+        end
       end
     end
   end

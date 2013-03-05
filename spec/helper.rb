@@ -11,12 +11,8 @@ require 'bundler'
 Bundler.require(:default, :test)
 
 require 'toy'
-require 'support/constants'
-require 'support/objects'
-require 'support/identity_map_matcher'
-require 'support/name_and_number_key_factory'
-require 'support/shared_active_model_lint'
-require 'support/instrumenter_helpers'
+
+Dir[root_path.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |c|
   c.include(Support::Constants)
