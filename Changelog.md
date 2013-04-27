@@ -2,7 +2,7 @@
 
 I will do my best to keep this up to date with significant changes here, starting in 0.8.3.
 
-## master
+## 0.13.2
 
 * Added instrumentation and log subscriber
 * Removed Toy.logger, Toy.logger? and Toy.logger=. All logging is now through log_subscriber. See the README.
