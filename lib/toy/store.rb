@@ -5,7 +5,7 @@ module Toy
     include Toy::Object
     include Identity
     include Persistence
-    include MassAssignmentSecurity
+    include MassAssignmentSecurity if defined?(ActiveModel::MassAssignmentSecurity)
     include DirtyStore
     include Querying
     include Reloadable
