@@ -74,13 +74,15 @@ describe Toy::Reloadable do
       @user.skills.should == []
     end
 
-    it "reloads attributes protected from mass assignment" do
-      User.attribute(:admin, Boolean)
-      User.attr_accessible(:name)
-      user = User.new(:name => 'John')
-      user.admin = true
-      user.save
-      user.reload.admin.should be_true
+    if defined?(ActiveSupport::MassAssignmentProtection)
+      it "reloads attributes protected from mass assignment" do
+        User.attribute(:admin, Boolean)
+        User.attr_accessible(:name)
+        user = User.new(:name => 'John')
+        user.admin = true
+        user.save
+        user.reload.admin.should be_true
+      end
     end
   end
 end

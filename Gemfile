@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 gemspec
 
-gem 'activesupport', '~> 3.2.0'
-gem 'activemodel',   '~> 3.2.0'
+gem 'activesupport', '~> 4.1.0'
+gem 'activemodel',   '~> 4.1.0'
 gem 'rake',          '~> 0.9.0'
 gem 'oj',            '~> 1.0.0'
 gem 'multi_json',    '~> 1.3.2'
@@ -16,8 +16,9 @@ group(:guard) do
 end
 
 group(:test) do
-  gem 'rspec',      '~> 2.8.0'
+  gem 'rspec',      '~> 2.14.0'
   gem 'timecop',    '~> 0.3.0'
-  gem 'tzinfo',     '~> 0.3.0'
+  gem 'tzinfo',     '~> 1.0'
   gem 'rack-test',  '~> 0.6.0'
+  gem 'pry'
 end

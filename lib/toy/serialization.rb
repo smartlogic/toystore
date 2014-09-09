@@ -4,6 +4,10 @@ module Toy
     include ActiveModel::Serializers::JSON
     include ActiveModel::Serializers::Xml
 
+    included do |base|
+      base.include_root_in_json = true
+    end
+
     def serializable_attributes
       attributes.keys.sort.map(&:to_sym)
     end

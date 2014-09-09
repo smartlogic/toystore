@@ -7,11 +7,11 @@ describe Toy::Instrumentation::LogSubscriber do
   before do
     Toy.instrumenter = ActiveSupport::Notifications
     @io = StringIO.new
-    Toy::Instrumentation::LogSubscriber.logger = Logger.new(@io)
+    ActiveSupport::LogSubscriber.logger = Logger.new(@io)
   end
 
   after do
-    Toy::Instrumentation::LogSubscriber.logger = nil
+    ActiveSupport::LogSubscriber.logger = nil
   end
 
   let(:log) { @io.string }
