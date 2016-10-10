@@ -1,13 +1,16 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
+ruby '2.2.2'
+
 gemspec
 
-gem 'activesupport', '~> 4.1.0'
-gem 'activemodel',   '~> 4.1.0'
+gem 'activesupport', '~> 5.0.0'
+gem 'activemodel',   '~> 5.0.0'
+gem 'activemodel-serializers-xml', '~> 1.0.1'
 gem 'rake',          '~> 0.9.0'
 gem 'oj',            '~> 1.0.0'
 gem 'multi_json',    '~> 1.3.2'
-gem 'metriks', :require => false
-gem 'statsd-ruby', :require => false
+gem 'metriks', require: false
+gem 'statsd-ruby', require: false
 
 group(:guard) do
   gem 'guard',          '~> 1.0.0'

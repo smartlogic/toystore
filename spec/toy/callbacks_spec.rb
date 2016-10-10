@@ -8,7 +8,7 @@ module CallbackHelper
       :before_update,  :after_update,
       :before_save,    :after_save,
       :before_destroy, :after_destroy].each do |callback|
-      callback_method = "#{callback}_callback"
+      callback_method = "#{callback}_callback".to_sym
       send(callback, callback_method)
       define_method(callback_method) { history << callback.to_sym }
     end

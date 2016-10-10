@@ -18,7 +18,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'adapter',       '~> 0.7.0'
-  s.add_dependency 'activemodel',   '~> 4.1'
-  s.add_dependency 'activesupport', '~> 4.1'
+  s.add_dependency 'activemodel-serializers-xml', '~> 1.x'
+  s.add_dependency 'activemodel',   '~> 5.x'
+  s.add_dependency 'activesupport', '~> 5.x'
   s.add_dependency 'simple_uuid',   '~> 0.2'
 end

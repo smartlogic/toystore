@@ -8,6 +8,7 @@ root_path = Pathname(__FILE__).dirname.join('..').expand_path
 require 'adapter/memory'
 require 'simple_uuid'
 require 'active_model'
+require 'active_model/serializers'
 require 'active_support/json'
 require 'active_support/core_ext'
 
