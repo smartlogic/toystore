@@ -16,6 +16,12 @@ module Toy
       @attributes ||= {}
       name    = name.to_s
       current = read_attribute(name)
+      if value.class == Hash && current.class == ActionController::Parameters
+        value = ActionController::Parameters.new(value)
+      end
+      if current.class == Hash && value.class == ActionController::Parameters
+        current = ActionController::Parameters.new(current)
+      end
       attribute_will_change!(name) if current != value
       super
     end
